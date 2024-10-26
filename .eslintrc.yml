@@ -23,7 +23,7 @@ rules:
     '@typescript-eslint/no-empty-function': 'off',
     '@typescript-eslint/no-unused-vars': 'warn',
     'react/no-unknown-property': 'off',
-    '@next/next/no-html-link-for-pages': ['error', 'packages/'],
+    '@next/next/no-html-link-for-pages': ['error', 'projects/'],
   }
 settings:
   react:

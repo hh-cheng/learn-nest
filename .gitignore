@@ -39,4 +39,4 @@ yarn-error.log*
 next-env.d.ts
 
 # custom
-packages/3-csr/index.js
+**/uploads
