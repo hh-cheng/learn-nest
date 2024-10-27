@@ -10,10 +10,12 @@
   <body>
     <input id="fileInput" type="file" multiple />
     <input id="filesInput" type="file" multiple />
+    <input id="limitFileUpload" type="file" multiple />
 
     <script>
       const fileInput = document.getElementById('fileInput')
       const filesInput = document.getElementById('filesInput')
+      const limitFileUpload = document.getElementById('limitFileUpload')
 
       async function uploadAFile() {
         const data = new FormData()
@@ -34,8 +36,19 @@
         console.log(res)
       }
 
+      async function uploadLimitedFile() {
+        const data = new FormData()
+        data.set('file', limitFileUpload.files[0])
+        const res = await axios.post(
+          'http://127.0.0.1:3000/uploadFileWithLimitation',
+          data,
+        )
+        console.log(res)
+      }
+
       fileInput.onchange = uploadAFile
       filesInput.onchange = uploadFiles
+      limitFileUpload.onchange = uploadLimitedFile
     </script>
   </body>
 </html>

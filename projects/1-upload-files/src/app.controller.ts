@@ -1,19 +1,19 @@
 import {
   Body,
   Controller,
+  FileTypeValidator,
+  HttpException,
+  MaxFileSizeValidator,
+  ParseFilePipe,
   Post,
   UploadedFile,
   UploadedFiles,
   UseInterceptors,
 } from '@nestjs/common'
-
-import { AppService } from './app.service'
 import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express'
 
 @Controller()
 export class AppController {
-  constructor(private readonly appService: AppService) {}
-
   @Post('uploadFile')
   @UseInterceptors(FileInterceptor('file', { dest: 'uploads' }))
   uploadFile(
@@ -28,5 +28,24 @@ export class AppController {
   @UseInterceptors(FilesInterceptor('files', 3, { dest: 'uploads' }))
   uploadFiles(@UploadedFiles() files: Array<Express.Multer.File>) {
     console.log('files', files)
+  }
+
+  @Post('uploadFileWithLimitation')
+  @UseInterceptors(FileInterceptor('file', { dest: 'uploads' }))
+  uploadFileWithLimitation(
+    @UploadedFile(
+      new ParseFilePipe({
+        validators: [
+          new MaxFileSizeValidator({ maxSize: 10000000 }),
+          new FileTypeValidator({ fileType: 'image/jpeg' }),
+        ],
+        exceptionFactory(err) {
+          throw new HttpException(`Validation failed: ${err}`, 400)
+        },
+      }),
+    )
+    file: Express.Multer.File,
+  ) {
+    console.log('file', file)
   }
 }
