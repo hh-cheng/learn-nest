@@ -9,11 +9,13 @@
   </head>
   <body>
     <input id="fileInput" type="file" multiple />
+    <input id="filesInput" type="file" multiple />
 
     <script>
       const fileInput = document.getElementById('fileInput')
+      const filesInput = document.getElementById('filesInput')
 
-      async function uploadFiles() {
+      async function uploadAFile() {
         const data = new FormData()
         data.set('name', 'hh')
         data.set('age', 25)
@@ -23,7 +25,17 @@
         console.log(res)
       }
 
-      fileInput.onchange = uploadFiles
+      async function uploadFiles() {
+        const data = new FormData()
+        ;[...filesInput.files].forEach((file) => {
+          data.append('files', file)
+        })
+        const res = await axios.post('http://127.0.0.1:3000/uploadFiles', data)
+        console.log(res)
+      }
+
+      fileInput.onchange = uploadAFile
+      filesInput.onchange = uploadFiles
     </script>
   </body>
 </html>

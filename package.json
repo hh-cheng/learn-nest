@@ -51,7 +51,7 @@
       "npm run lint:script",
       "git add ."
     ],
-    "**/*.{css}": [
+    "**/*.css": [
       "npm run lint:style",
       "git add ."
     ]

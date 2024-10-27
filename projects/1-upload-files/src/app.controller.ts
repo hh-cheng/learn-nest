@@ -3,11 +3,12 @@ import {
   Controller,
   Post,
   UploadedFile,
+  UploadedFiles,
   UseInterceptors,
 } from '@nestjs/common'
 
 import { AppService } from './app.service'
-import { FileInterceptor } from '@nestjs/platform-express'
+import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express'
 
 @Controller()
 export class AppController {
@@ -21,5 +22,11 @@ export class AppController {
   ) {
     console.log('file', file)
     console.log('body', body)
+  }
+
+  @Post('uploadFiles')
+  @UseInterceptors(FilesInterceptor('files', 3, { dest: 'uploads' }))
+  uploadFiles(@UploadedFiles() files: Array<Express.Multer.File>) {
+    console.log('files', files)
   }
 }
