@@ -3,6 +3,7 @@ import { BadRequestException, Inject, Injectable } from '@nestjs/common'
 
 import { User } from './entities/user.entity'
 import { DbService } from 'src/db/db.service'
+import { LoginUserDto } from './dto/login-user.dto'
 import { RegisterDto } from './dto/register-user.dto'
 
 @Injectable()
@@ -30,6 +31,25 @@ export class UserService {
         return of([from(this.dbService.write(users)), user] as const)
       }),
       map(([, user]) => user),
+    )
+  }
+
+  login(loginDto: LoginUserDto) {
+    return from(this.dbService.read()).pipe(
+      map((users: User[]) => {
+        const foundUser = users.find(
+          (user) => user.username === loginDto.username,
+        )
+        if (!foundUser) {
+          throw new BadRequestException('User not found')
+        }
+
+        if (foundUser.password !== loginDto.password) {
+          throw new BadRequestException('Invalid password')
+        }
+
+        return foundUser
+      }),
     )
   }
 }
