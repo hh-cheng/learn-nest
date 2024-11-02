@@ -13,9 +13,9 @@ import {
   FormMessage,
   FormControl,
 } from '@components/ui/form'
-import { useToast } from '@/hooks/use-toast'
 import { Input } from '@components/ui/input'
 import { Button } from '@/components/ui/button'
+import { useToast } from '@/components/hooks/use-toast'
 
 const formSchema = z
   .object({
@@ -47,17 +47,17 @@ export default function Register() {
   })
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
-    fetch('http://localhost:3000/user/register', {
+    const res = await fetch('http://localhost:3000/user/register', {
       method: 'POST',
       body: JSON.stringify(data),
       headers: { 'Content-Type': 'application/json' },
     })
-      .then(() => {
-        toast({ description: 'User registered' })
-      })
-      .catch(() => {
-        toast({ description: 'Failed to register user' })
-      })
+
+    if (res.ok) {
+      toast({ title: 'register successfully' })
+    } else {
+      toast({ title: 'User registered', variant: 'destructive' })
+    }
   }
 
   return (
