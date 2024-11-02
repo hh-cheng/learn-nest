@@ -1,7 +1,6 @@
 'use client'
 
 import { z } from 'zod'
-import Link from 'next/link'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 
@@ -17,24 +16,16 @@ import { Input } from '@components/ui/input'
 import { Button } from '@/components/ui/button'
 import { useToast } from '@/components/hooks/use-toast'
 
-const formSchema = z
-  .object({
-    username: z
-      .string()
-      .min(2, { message: 'Username should be at least 2 characters' }),
-    password: z
-      .string()
-      .min(6, { message: 'Password should be at least 6 characters' }),
-    confirmedPassword: z
-      .string()
-      .min(6, { message: 'Password should be at least 6 characters' }),
-  })
-  .refine((data) => data.password === data.confirmedPassword, {
-    message: 'Passwords do not match',
-    path: ['confirmedPassword'], // where the error message shows
-  })
+const formSchema = z.object({
+  username: z
+    .string()
+    .min(2, { message: 'Username should be at least 2 characters' }),
+  password: z
+    .string()
+    .min(6, { message: 'Password should be at least 6 characters' }),
+})
 
-export default function Register() {
+export default function Login() {
   const { toast } = useToast()
 
   const form = useForm({
@@ -42,22 +33,26 @@ export default function Register() {
     defaultValues: {
       username: '',
       password: '',
-      confirmedPassword: '',
     },
   })
 
-  const onSubmit = async (data: z.infer<typeof formSchema>) => {
-    const res = await fetch('http://localhost:3000/user/register', {
+  const onSubmit = (data: z.infer<typeof formSchema>) => {
+    fetch('http://localhost:3000/user/login', {
       method: 'POST',
       body: JSON.stringify(data),
       headers: { 'Content-Type': 'application/json' },
     })
-
-    if (res.ok) {
-      toast({ title: 'register successfully' })
-    } else {
-      toast({ title: 'User registered', variant: 'destructive' })
-    }
+      .then((res) => {
+        if (res.ok) {
+          toast({ title: 'login successfully' })
+        } else {
+          toast({ title: 'User not found', variant: 'destructive' })
+        }
+      })
+      .catch((err) => {
+        console.error(err)
+        toast({ title: 'system error', variant: 'destructive' })
+      })
   }
 
   return (
@@ -76,6 +71,7 @@ export default function Register() {
             </FormItem>
           )}
         />
+
         <FormField
           control={form.control}
           name="password"
@@ -89,30 +85,9 @@ export default function Register() {
             </FormItem>
           )}
         />
-        <FormField
-          control={form.control}
-          name="confirmedPassword"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Password: </FormLabel>
-              <FormControl>
-                <Input
-                  placeholder="confirmedPassword"
-                  type="password"
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <div className="text-center">
-          <Button variant="link">
-            <Link href="/login">Back to login</Link>
-          </Button>
-        </div>
+
         <Button type="submit" className="w-full">
-          register
+          login
         </Button>
       </form>
     </Form>
