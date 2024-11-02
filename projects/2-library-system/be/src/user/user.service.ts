@@ -14,7 +14,6 @@ export class UserService {
   register(registerDto: RegisterDto) {
     return from(this.dbService.read()).pipe(
       map((users: User[]) => {
-        console.log('users', users)
         const foundUser = users.find(
           (item) => item.username === registerDto.username,
         )
