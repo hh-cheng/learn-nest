@@ -29,9 +29,5 @@ export default function Home() {
 
   const bookList = use(getBookList())
 
-  return (
-    <>
-      <BookList bookList={bookList} />
-    </>
-  )
+  return <BookList bookList={bookList} />
 }
