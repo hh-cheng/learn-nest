@@ -4,20 +4,20 @@
     "name": "三国演义",
     "author": "罗贯中",
     "description": "三国演义，魏蜀吴",
-    "cover": "xx.png"
+    "cover": "https://picsum.photos/seed/picsum/200/300"
   },
   {
     "id": 819014,
     "name": "水浒传",
     "author": "施耐庵",
     "description": "梁山一百单八将",
-    "cover": "xx.png"
+    "cover": "https://picsum.photos/seed/picsum/200/300"
   },
   {
     "id": 985758,
     "name": "西游记",
     "author": "吴承恩",
     "description": "黑猴神话...",
-    "cover": "xx.png"
+    "cover": "https://picsum.photos/seed/picsum/200/300"
   }
 ]

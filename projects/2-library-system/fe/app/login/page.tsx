@@ -2,6 +2,7 @@
 
 import { z } from 'zod'
 import { useForm } from 'react-hook-form'
+import { useRouter } from 'next/navigation'
 import { zodResolver } from '@hookform/resolvers/zod'
 
 import {
@@ -27,6 +28,7 @@ const formSchema = z.object({
 
 export default function Login() {
   const { toast } = useToast()
+  const router = useRouter()
 
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -45,6 +47,7 @@ export default function Login() {
       .then((res) => {
         if (res.ok) {
           toast({ title: 'login successfully' })
+          router.push('/')
         } else {
           toast({ title: 'User not found', variant: 'destructive' })
         }
