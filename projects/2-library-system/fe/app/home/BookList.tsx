@@ -28,13 +28,19 @@ export default function BookList(props: Props) {
               <Image src={cover} alt={name} width={230} height={300} />
             </CardTitle>
             <CardContent className="text-center mt-3 pb-2">
-              <p>{name}</p>
+              <p>《{name}》</p>
               <p>{author}</p>
             </CardContent>
             <CardFooter className="flex justify-center space-x-2">
-              <Button variant="link">detail</Button>
-              <Button variant="link">update</Button>
-              <Button variant="link">remove</Button>
+              <Button variant="link" className="text-blue-500">
+                detail
+              </Button>
+              <Button variant="link" className="text-blue-500">
+                update
+              </Button>
+              <Button variant="link" className="text-blue-500">
+                remove
+              </Button>
             </CardFooter>
           </Card>
         )
