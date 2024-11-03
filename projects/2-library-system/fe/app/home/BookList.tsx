@@ -1,10 +1,11 @@
 'use client'
 import { z } from 'zod'
 import Image from 'next/image'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 
+import Add from './components/Add'
 import { Book } from '@/lib/entities'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
@@ -44,6 +45,14 @@ export default function BookList(props: Props) {
     })
   }
 
+  useEffect(() => {
+    const bookNameFilter = form.getValues('bookName')
+    setFilteredBookList(() => {
+      if (!bookNameFilter) return bookList
+      return bookList.filter((book) => book.name.includes(bookNameFilter))
+    })
+  }, [bookList, form])
+
   return (
     <>
       <div className="flex px-5 items-center">
@@ -71,9 +80,7 @@ export default function BookList(props: Props) {
           </form>
         </Form>
 
-        <Button variant="default" className="ml-3 mt-2">
-          add
-        </Button>
+        <Add />
       </div>
 
       <div className="flex p-5 flex-wrap">
