@@ -1,12 +1,13 @@
 'use client'
 import { z } from 'zod'
 import Image from 'next/image'
-import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
+import { useEffect, useState } from 'react'
 import { zodResolver } from '@hookform/resolvers/zod'
 
 import Add from './components/Add'
 import { Book } from '@/lib/entities'
+import Remove from './components/Remove'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Card, CardTitle, CardContent, CardFooter } from '@/components/ui/card'
@@ -73,7 +74,6 @@ export default function BookList(props: Props) {
                 </FormItem>
               )}
             />
-
             <Button variant="default" type="submit" className="ml-3 mt-2">
               search
             </Button>
@@ -105,9 +105,7 @@ export default function BookList(props: Props) {
                 <Button variant="link" className="text-blue-500">
                   update
                 </Button>
-                <Button variant="link" className="text-blue-500">
-                  remove
-                </Button>
+                <Remove id={id} />
               </CardFooter>
             </Card>
           )
