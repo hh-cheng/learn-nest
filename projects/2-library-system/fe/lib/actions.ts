@@ -19,3 +19,17 @@ export async function getBookList(): Promise<BookType[]> {
   }
   return bookList
 }
+
+export async function updateBook(book: BookType): Promise<{ ok: boolean }> {
+  try {
+    const { ok } = await fetch('http://localhost:3000/book/update', {
+      method: 'PUT',
+      body: JSON.stringify(book),
+      headers: { 'Content-Type': 'application/json' },
+    })
+    return { ok }
+  } catch (err) {
+    console.error(err)
+    return { ok: false }
+  }
+}

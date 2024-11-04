@@ -7,6 +7,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 
 import Add from './components/Add'
 import { Book } from '@/lib/entities'
+import Update from './components/Update'
 import Remove from './components/Remove'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
@@ -102,9 +103,7 @@ export default function BookList(props: Props) {
                 <Button variant="link" className="text-blue-500">
                   detail
                 </Button>
-                <Button variant="link" className="text-blue-500">
-                  update
-                </Button>
+                <Update {...book} />
                 <Remove id={id} />
               </CardFooter>
             </Card>

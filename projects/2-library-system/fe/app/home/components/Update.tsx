@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/rules-of-hooks */
 'use client'
 import { z } from 'zod'
 import { useState } from 'react'
@@ -6,9 +5,12 @@ import { useForm } from 'react-hook-form'
 import { useRouter } from 'next/navigation'
 import { zodResolver } from '@hookform/resolvers/zod'
 
+import { Book } from '@/lib/entities'
+import { updateBook } from '@/lib/actions'
 import { Input } from '@components/ui/input'
 import { Button } from '@components/ui/button'
 import { Textarea } from '@components/ui/textarea'
+import { useToast } from '@components/hooks/use-toast'
 import {
   Form,
   FormItem,
@@ -26,48 +28,38 @@ import {
   DialogTrigger,
 } from '@components/ui/dialog'
 
-const formSchema = z.object({
-  name: z.string().min(1),
-  author: z.string().min(1),
-  description: z.string().min(1),
-  cover: z.string().url('Invalid url'),
-})
+type BookType = z.infer<typeof Book>
 
-type FormType = z.infer<typeof formSchema>
-
-export default function Add() {
+export default function Update(props: BookType) {
   const [isOpen, setIsOpen] = useState(false)
 
   const router = useRouter()
+  const { toast } = useToast()
 
   const form = useForm({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      name: '',
-      cover: '',
-      author: '',
-      description: '',
-    },
+    resolver: zodResolver(Book),
+    defaultValues: props,
   })
 
   const onOpenChange = () => {
     setIsOpen((v) => !v)
 
     if (isOpen) {
-      form.reset()
+      form.reset(props)
       form.clearErrors()
+    } else {
+      form.reset(props)
     }
   }
 
-  const onSubmit = (data: FormType) => {
-    fetch('http://localhost:3000/book/create', {
-      method: 'POST',
-      body: JSON.stringify(data),
-      headers: { 'Content-Type': 'application/json' },
-    }).then((res) => {
-      if (res.ok) {
+  const onSubmit = (data: BookType) => {
+    updateBook(data).then(({ ok }) => {
+      if (ok) {
+        toast({ title: 'update succeeded' })
         router.refresh()
         onOpenChange()
+      } else {
+        toast({ title: 'update failed', variant: 'destructive' })
       }
     })
   }
@@ -75,8 +67,8 @@ export default function Add() {
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
       <DialogTrigger asChild>
-        <Button variant="default" className="ml-3 mt-2">
-          add
+        <Button variant="link" className="text-blue-500">
+          update
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[520px]">
@@ -162,7 +154,7 @@ export default function Add() {
 
             <DialogFooter>
               <Button type="submit" variant="default">
-                Add
+                Update
               </Button>
             </DialogFooter>
           </form>
