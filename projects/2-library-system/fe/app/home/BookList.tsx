@@ -7,11 +7,12 @@ import { zodResolver } from '@hookform/resolvers/zod'
 
 import Add from './components/Add'
 import { Book } from '@/lib/entities'
+import Detail from './components/Detail'
 import Update from './components/Update'
 import Remove from './components/Remove'
-import { Input } from '@/components/ui/input'
-import { Button } from '@/components/ui/button'
-import { Card, CardTitle, CardContent, CardFooter } from '@/components/ui/card'
+import { Input } from '@components/ui/input'
+import { Button } from '@components/ui/button'
+import { Card, CardTitle, CardContent, CardFooter } from '@components/ui/card'
 import {
   Form,
   FormItem,
@@ -100,9 +101,7 @@ export default function BookList(props: Props) {
                 <p className="text-sm">{author}</p>
               </CardContent>
               <CardFooter className="flex justify-center space-x-2">
-                <Button variant="link" className="text-blue-500">
-                  detail
-                </Button>
+                <Detail {...book} />
                 <Update {...book} />
                 <Remove id={id} />
               </CardFooter>
