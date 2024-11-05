@@ -11,15 +11,26 @@
     <script src="https://unpkg.com/axios@0.24.0/dist/axios.min.js"></script>
     <script>
       const fileInput = document.getElementById('fileInput')
+      const chunkSize = 1 * 1024 * 1024 // 1M
 
       fileInput.onchange = async function () {
-        const data = new FormData()
+        const file = fileInput.files[0]
+        const chunks = []
+        let startPos = 0
 
-        ;[...fileInput.files].forEach((item) => {
-          data.append('files', item)
+        while (startPos < file.size) {
+          chunks.push(file.slice(startPos, startPos + chunkSize))
+          startPos += chunkSize
+        }
+
+        const randomId = Math.random().toString().slice(2, 8)
+
+        chunks.forEach((chunk, ind) => {
+          const data = new FormData()
+          data.set('name', `${randomId}_${file.name}-${ind}`)
+          data.append('files', chunk)
+          axios.post('http://localhost:3000/upload', data)
         })
-        const res = await axios.post('http://localhost:3000/upload', data)
-        console.log(res)
       }
     </script>
   </body>

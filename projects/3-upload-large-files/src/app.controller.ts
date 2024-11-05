@@ -1,4 +1,5 @@
 import {
+  Body,
   Controller,
   Post,
   UploadedFiles,
@@ -14,5 +15,10 @@ export class AppController {
 
   @Post('upload')
   @UseInterceptors(FilesInterceptor('files', 20, { dest: 'uploads' }))
-  UploadedFiles(@UploadedFiles() files: Array<Express.Multer.File>) {}
+  UploadedFiles(
+    @UploadedFiles() files: Array<Express.Multer.File>,
+    @Body() body: { name: string },
+  ) {
+    return this.appService.gatherFileChunks(body.name, files[0])
+  }
 }
