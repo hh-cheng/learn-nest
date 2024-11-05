@@ -1,7 +1,9 @@
 import {
   Body,
   Controller,
+  Get,
   Post,
+  Query,
   UploadedFiles,
   UseInterceptors,
 } from '@nestjs/common'
@@ -20,5 +22,10 @@ export class AppController {
     @Body() body: { name: string },
   ) {
     return this.appService.gatherFileChunks(body.name, files[0])
+  }
+
+  @Get('merge')
+  merge(@Query('name') name: string) {
+    return this.appService.merge(name)
   }
 }

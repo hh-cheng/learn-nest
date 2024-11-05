@@ -25,12 +25,15 @@
 
         const randomId = Math.random().toString().slice(2, 8)
 
-        chunks.forEach((chunk, ind) => {
-          const data = new FormData()
-          data.set('name', `${randomId}_${file.name}-${ind}`)
-          data.append('files', chunk)
-          axios.post('http://localhost:3000/upload', data)
-        })
+        await Promise.all(
+          chunks.map((chunk, ind) => {
+            const data = new FormData()
+            data.set('name', `${randomId}_${file.name}-${ind}`)
+            data.append('files', chunk)
+            return axios.post('http://localhost:3000/upload', data)
+          }),
+        )
+        axios.get(`http://localhost:3000/merge?name=${randomId}_${file.name}`)
       }
     </script>
   </body>
