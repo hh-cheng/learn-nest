@@ -1,9 +1,16 @@
 import { Module } from '@nestjs/common'
-import { AppController } from './app.controller'
+import { JwtModule } from '@nestjs/jwt'
+
 import { AppService } from './app.service'
+import { AppController } from './app.controller'
 
 @Module({
-  imports: [],
+  imports: [
+    JwtModule.register({
+      secret: 'hh',
+      signOptions: { expiresIn: '7d' },
+    }),
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
