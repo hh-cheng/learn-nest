@@ -1,17 +1,8 @@
 import * as crypto from 'crypto'
 import type { Repository } from 'typeorm'
 import { InjectRepository } from '@nestjs/typeorm'
+import { catchError, concatMap, from, iif, map, of, throwError } from 'rxjs'
 import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common'
-import {
-  catchError,
-  concatMap,
-  EMPTY,
-  from,
-  iif,
-  map,
-  of,
-  throwIfEmpty,
-} from 'rxjs'
 
 import { User } from './entities/user.entity'
 import { RegisterDto } from './dto/register.dto'
@@ -34,9 +25,15 @@ export class UserService {
       this.userRepository.findOneBy({ username: user.username }),
     ).pipe(
       concatMap((foundUser) => {
-        return iif(() => !!foundUser, EMPTY, of(true))
+        return iif(
+          () => !!foundUser,
+          throwError(
+            () =>
+              new HttpException('User already exists', HttpStatus.BAD_REQUEST),
+          ),
+          of(true),
+        )
       }),
-      throwIfEmpty(() => new HttpException('User already exists', 400)),
       concatMap(() => {
         const newUser = new User()
         newUser.username = user.username
@@ -47,10 +44,7 @@ export class UserService {
       map(() => 'User created successfully'),
       catchError((err) => {
         this.logger.error(err, UserService)
-        throw new HttpException(
-          'User failed to register',
-          HttpStatus.BAD_REQUEST,
-        )
+        return of(err.response ?? 'User failed to register')
       }),
     )
   }
