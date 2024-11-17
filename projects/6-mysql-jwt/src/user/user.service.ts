@@ -4,6 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm'
 import { catchError, concatMap, from, iif, map, of, throwError } from 'rxjs'
 import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common'
 
+import { LoginDto } from './dto/login.dto'
 import { User } from './entities/user.entity'
 import { RegisterDto } from './dto/register.dto'
 
@@ -19,6 +20,21 @@ export class UserService {
 
   @InjectRepository(User)
   private readonly userRepository: Repository<User>
+
+  login(user: LoginDto) {
+    return from(
+      this.userRepository.findOneBy({ username: user.username }),
+    ).pipe(
+      map((foundUser) => {
+        if (!foundUser)
+          throw new HttpException('User not found', HttpStatus.BAD_REQUEST)
+        if (foundUser.password !== md5(user.password)) {
+          throw new HttpException('Invalid password', HttpStatus.BAD_REQUEST)
+        }
+        return foundUser
+      }),
+    )
+  }
 
   register(user: RegisterDto) {
     return from(

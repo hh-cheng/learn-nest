@@ -1,9 +1,10 @@
 import { Module } from '@nestjs/common'
+import { JwtModule } from '@nestjs/jwt'
 import { TypeOrmModule } from '@nestjs/typeorm'
 
 import { AppService } from './app.service'
-import { AppController } from './app.controller'
 import { UserModule } from './user/user.module'
+import { AppController } from './app.controller'
 import { User } from './user/entities/user.entity'
 
 @Module({
@@ -21,6 +22,11 @@ import { User } from './user/entities/user.entity'
       database: 'login_test',
       connectorPackage: 'mysql2',
       extra: { authPlugins: 'sha256_password' },
+    }),
+    JwtModule.register({
+      global: true,
+      secret: 'hh',
+      signOptions: { expiresIn: '7d' },
     }),
     UserModule,
   ],

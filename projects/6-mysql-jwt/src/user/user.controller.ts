@@ -1,4 +1,7 @@
-import { Body, Controller, HttpCode, Post } from '@nestjs/common'
+import { map, tap } from 'rxjs'
+import type { Response } from 'express'
+import { JwtService } from '@nestjs/jwt'
+import { Body, Controller, HttpCode, Inject, Post, Res } from '@nestjs/common'
 
 import { LoginDto } from './dto/login.dto'
 import { UserService } from './user.service'
@@ -8,9 +11,26 @@ import { RegisterDto } from './dto/register.dto'
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
+  @Inject(JwtService)
+  private readonly jwtService: JwtService
+
   @Post('login')
-  login(@Body() user: LoginDto) {
-    console.log(user)
+  @HttpCode(200)
+  login(
+    @Body() user: LoginDto,
+    @Res({ passthrough: true }) response: Response,
+  ) {
+    return this.userService.login(user).pipe(
+      tap((foundUser) => {
+        response.setHeader(
+          'token',
+          this.jwtService.sign({
+            user: { id: foundUser.id, username: foundUser.username },
+          }),
+        )
+      }),
+      map(() => 'login successfully'),
+    )
   }
 
   @Post('register')
