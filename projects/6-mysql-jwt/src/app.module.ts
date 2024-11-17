@@ -2,7 +2,6 @@ import { Module } from '@nestjs/common'
 import { JwtModule } from '@nestjs/jwt'
 import { TypeOrmModule } from '@nestjs/typeorm'
 
-import { AppService } from './app.service'
 import { UserModule } from './user/user.module'
 import { AppController } from './app.controller'
 import { User } from './user/entities/user.entity'
@@ -31,6 +30,6 @@ import { User } from './user/entities/user.entity'
     UserModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [],
 })
 export class AppModule {}
