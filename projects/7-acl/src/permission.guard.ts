@@ -1,6 +1,6 @@
 import type { Request } from 'express'
 import { Reflector } from '@nestjs/core'
-import { from, map, Observable } from 'rxjs'
+import { concatMap, from, iif, map, Observable, of, tap } from 'rxjs'
 import {
   CanActivate,
   ExecutionContext,
@@ -10,11 +10,15 @@ import {
 } from '@nestjs/common'
 
 import { UserService } from './user/user.service'
+import { RedisService } from './redis/redis.service'
 
 @Injectable()
 export class PermissionGuard implements CanActivate {
   @Inject(UserService)
   private readonly userService: UserService
+
+  @Inject(RedisService)
+  private readonly redisService: RedisService
 
   @Inject(Reflector)
   private readonly reflector: Reflector
@@ -27,21 +31,48 @@ export class PermissionGuard implements CanActivate {
     if (!user) {
       throw new UnauthorizedException('user not login')
     }
+    const redisKey = `user_${user.username}_permissions`
 
-    return from(this.userService.findByUsername(user.username)).pipe(
-      map((user) => {
-        return [
-          user,
-          this.reflector.get<string>('permission', context.getHandler()),
-        ] as const
+    const _getUserPermissionsFromDb$ = () => {
+      return from(this.userService.findByUsername(user.username)).pipe(
+        map((user) => {
+          return user.permissions.map((p) => p.name)
+        }),
+      )
+    }
+
+    const _getUserPermissionsFromRedis$ = () => {
+      return from(this.redisService.listGet(redisKey)).pipe(
+        concatMap((permissions) => {
+          return iif(() => !!permissions.length, of(permissions), of(null))
+        }),
+      )
+    }
+
+    const _setUserPermissionsToRedis$ = (permissions: string[]) => {
+      return from(this.redisService.listSet(redisKey, permissions, 60 * 30))
+    }
+
+    const _checkPermission = (permissions: string[]) => {
+      const permission = this.reflector.get<string>(
+        'permission',
+        context.getHandler(),
+      )
+      if (permissions.includes(permission)) {
+        return true
+      }
+      throw new UnauthorizedException('permission denied')
+    }
+
+    return _getUserPermissionsFromRedis$().pipe(
+      concatMap((permissions) => {
+        return iif(
+          () => Array.isArray(permissions),
+          of(<string[]>permissions),
+          _getUserPermissionsFromDb$().pipe(tap(_setUserPermissionsToRedis$)),
+        )
       }),
-      map(([user, permission]) => {
-        if (user.permissions.some((p) => p.name === permission)) {
-          return true
-        } else {
-          throw new UnauthorizedException('permission denied')
-        }
-      }),
+      map(_checkPermission),
     )
   }
 }

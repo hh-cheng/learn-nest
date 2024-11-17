@@ -27,7 +27,6 @@ export class UserController {
   login(@Body() user: LoginDto, @Session() session: Record<string, any>) {
     return this.userService.login(user).pipe(
       tap(() => {
-        console.log('username', user.username)
         session.user = { username: user.username }
       }),
       map(() => 'login success'),

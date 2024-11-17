@@ -5,6 +5,7 @@ import { TypeOrmModule } from '@nestjs/typeorm'
 import { AppService } from './app.service'
 import { AppController } from './app.controller'
 import { UserModule } from './user/user.module'
+import { RedisModule } from './redis/redis.module'
 import { AclTestModule } from './acl-test/acl-test.module'
 //* entities
 import { User } from './user/entities/user.entity'
@@ -12,6 +13,7 @@ import { Permission } from './user/entities/permission.entity'
 
 @Module({
   imports: [
+    //* third-party resources
     TypeOrmModule.forRoot({
       port: 3306,
       type: 'mysql',
@@ -26,6 +28,8 @@ import { Permission } from './user/entities/permission.entity'
       connectorPackage: 'mysql2',
       extra: { authPlugins: 'sha256_password' },
     }),
+    RedisModule,
+    //* custom resources
     UserModule,
     AclTestModule,
   ],
