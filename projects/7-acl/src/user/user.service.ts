@@ -67,4 +67,13 @@ export class UserService {
       }),
     )
   }
+
+  findByUsername(username: string) {
+    return from(
+      this.entityManager.findOne(User, {
+        where: { username },
+        relations: { permissions: true },
+      }),
+    )
+  }
 }
