@@ -1,10 +1,12 @@
-import { Injectable } from '@nestjs/common'
+import { from, map, tap } from 'rxjs'
 import type { EntityManager } from 'typeorm'
 import { InjectEntityManager } from '@nestjs/typeorm'
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 
 import { User } from './entities/user.entity'
 import { Role } from './entities/role.entity'
 import { Permission } from './entities/permission.entity'
+import { UserLoginDto } from './dto/user-login.dto'
 
 @Injectable()
 export class UserService {
@@ -48,5 +50,26 @@ export class UserService {
     ])
     await this.entityManager.save(Role, [role1, role2])
     await this.entityManager.save(User, [user1, user2])
+  }
+
+  login(user: UserLoginDto) {
+    return from(
+      this.entityManager.findOne(User, {
+        where: { username: user.username },
+        relations: { roles: true },
+      }),
+    ).pipe(
+      tap((user) => {
+        if (!user) {
+          throw new HttpException('User not found', HttpStatus.ACCEPTED)
+        }
+      }),
+      tap((user) => {
+        if (user.password !== user.password) {
+          throw new HttpException('Wrong password', HttpStatus.ACCEPTED)
+        }
+      }),
+      map(() => 'success'),
+    )
   }
 }

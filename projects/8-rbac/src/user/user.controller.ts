@@ -1,6 +1,14 @@
-import { Controller, Get } from '@nestjs/common'
+import {
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Post,
+} from '@nestjs/common'
 
 import { UserService } from './user.service'
+import { UserLoginDto } from './dto/user-login.dto'
 
 @Controller('user')
 export class UserController {
@@ -10,5 +18,11 @@ export class UserController {
   async initData() {
     await this.userService.initData()
     return 'success'
+  }
+
+  @Post('login')
+  @HttpCode(HttpStatus.OK)
+  login(@Body() user: UserLoginDto) {
+    return this.userService.login(user)
   }
 }
