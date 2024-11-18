@@ -1,9 +1,14 @@
 import { Module } from '@nestjs/common'
 import { TypeOrmModule } from '@nestjs/typeorm'
 
+//* resources
 import { AppService } from './app.service'
 import { AppController } from './app.controller'
 import { UserModule } from './user/user.module'
+//* entities
+import { User } from './user/entities/user.entity'
+import { Role } from './user/entities/role.entity'
+import { Permission } from './user/entities/permission.entity'
 
 @Module({
   imports: [
@@ -16,8 +21,8 @@ import { UserModule } from './user/user.module'
       database: 'rbac_test',
       synchronize: true,
       logging: true,
-      entities: [],
       poolSize: 10,
+      entities: [User, Role, Permission],
       connectorPackage: 'mysql2',
       extra: { authPlugins: 'sha256_password' },
     }),
