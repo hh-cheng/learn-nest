@@ -1,5 +1,5 @@
 import { from, map, tap } from 'rxjs'
-import type { EntityManager } from 'typeorm'
+import { In, type EntityManager } from 'typeorm'
 import { InjectEntityManager } from '@nestjs/typeorm'
 import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common'
 
@@ -81,5 +81,12 @@ export class UserService {
         return { token }
       }),
     )
+  }
+
+  findRolesByIds(roleIds: number[]) {
+    return this.entityManager.find(Role, {
+      where: { id: In(roleIds) },
+      relations: { permissions: true },
+    })
   }
 }

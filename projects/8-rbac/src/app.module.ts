@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common'
 import { JwtModule } from '@nestjs/jwt'
+import { APP_GUARD } from '@nestjs/core'
 import { TypeOrmModule } from '@nestjs/typeorm'
 
 //* resources
@@ -11,6 +12,8 @@ import { RbacTestModule } from './rbac-test/rbac-test.module'
 import { User } from './user/entities/user.entity'
 import { Role } from './user/entities/role.entity'
 import { Permission } from './user/entities/permission.entity'
+import { LoginGuard } from './login.guard'
+import { PermissionGuard } from './permission.guard'
 
 @Module({
   imports: [
@@ -37,6 +40,16 @@ import { Permission } from './user/entities/permission.entity'
     RbacTestModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_GUARD,
+      useClass: LoginGuard,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: PermissionGuard,
+    },
+  ],
 })
 export class AppModule {}
