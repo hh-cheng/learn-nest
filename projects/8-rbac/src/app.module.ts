@@ -6,6 +6,7 @@ import { TypeOrmModule } from '@nestjs/typeorm'
 import { AppService } from './app.service'
 import { AppController } from './app.controller'
 import { UserModule } from './user/user.module'
+import { RbacTestModule } from './rbac-test/rbac-test.module'
 //* entities
 import { User } from './user/entities/user.entity'
 import { Role } from './user/entities/role.entity'
@@ -33,6 +34,7 @@ import { Permission } from './user/entities/permission.entity'
       extra: { authPlugins: 'sha256_password' },
     }),
     UserModule,
+    RbacTestModule,
   ],
   controllers: [AppController],
   providers: [AppService],
