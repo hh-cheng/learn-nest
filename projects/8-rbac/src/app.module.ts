@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common'
+import { JwtModule } from '@nestjs/jwt'
 import { TypeOrmModule } from '@nestjs/typeorm'
 
 //* resources
@@ -12,6 +13,11 @@ import { Permission } from './user/entities/permission.entity'
 
 @Module({
   imports: [
+    JwtModule.register({
+      global: true,
+      secret: 'hh',
+      signOptions: { expiresIn: '7d' },
+    }),
     TypeOrmModule.forRoot({
       type: 'mysql',
       host: 'localhost',

@@ -1,17 +1,21 @@
 import { from, map, tap } from 'rxjs'
 import type { EntityManager } from 'typeorm'
 import { InjectEntityManager } from '@nestjs/typeorm'
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
+import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common'
 
 import { User } from './entities/user.entity'
 import { Role } from './entities/role.entity'
 import { Permission } from './entities/permission.entity'
 import { UserLoginDto } from './dto/user-login.dto'
+import { JwtService } from '@nestjs/jwt'
 
 @Injectable()
 export class UserService {
   @InjectEntityManager()
-  entityManager: EntityManager
+  private readonly entityManager: EntityManager
+
+  @Inject(JwtService)
+  private readonly jwtService: JwtService
 
   async initData() {
     const user1 = new User()
@@ -69,7 +73,13 @@ export class UserService {
           throw new HttpException('Wrong password', HttpStatus.ACCEPTED)
         }
       }),
-      map(() => 'success'),
+      map((foundUser) => {
+        const token = this.jwtService.sign({
+          username: foundUser.username,
+          roles: foundUser.roles,
+        })
+        return { token }
+      }),
     )
   }
 }
