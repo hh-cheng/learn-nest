@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post } from '@nestjs/common'
+import { Body, Controller, Get, Post, Query } from '@nestjs/common'
 
 import { UserService } from './user.service'
 import { LoginUserDto } from './dto/login-user.dto'
@@ -15,5 +15,10 @@ export class UserController {
   @Post('login')
   login(@Body() user: LoginUserDto) {
     return this.userService.login(user)
+  }
+
+  @Get('refresh')
+  refresh(@Query('refresh_token') refreshToken: string) {
+    return this.userService.refresh(refreshToken)
   }
 }

@@ -1,8 +1,14 @@
-import { from, map, tap } from 'rxjs'
 import { JwtService } from '@nestjs/jwt'
 import type { EntityManager } from 'typeorm'
 import { InjectEntityManager } from '@nestjs/typeorm'
-import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common'
+import { catchError, concatMap, from, map, tap } from 'rxjs'
+import {
+  HttpException,
+  HttpStatus,
+  Inject,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common'
 
 import { User } from './entities/user.entity'
 import { LoginUserDto } from './dto/login-user.dto'
@@ -14,6 +20,26 @@ export class UserService {
 
   @Inject(JwtService)
   private readonly jwtService: JwtService
+
+  private createTokens(user: User) {
+    const access_token = this.jwtService.sign(
+      {
+        id: user.id,
+        username: user.username,
+      },
+      { expiresIn: '30m' },
+    )
+    const refresh_token = this.jwtService.sign(
+      { id: user.id },
+      { expiresIn: '7d' },
+    )
+
+    return { access_token, refresh_token }
+  }
+
+  private findOneById(id: number) {
+    return from(this.entityManager.findOne(User, { where: { id } }))
+  }
 
   initData() {
     return from(
@@ -35,20 +61,16 @@ export class UserService {
           throw new HttpException('Invalid password', HttpStatus.OK)
         }
       }),
-      map((user) => {
-        const access_token = this.jwtService.sign(
-          {
-            id: user.id,
-            username: user.username,
-          },
-          { expiresIn: '30m' },
-        )
-        const refresh_token = this.jwtService.sign(
-          { userId: user.id },
-          { expiresIn: '7d' },
-        )
+      map((user) => this.createTokens(user)),
+    )
+  }
 
-        return { access_token, refresh_token }
+  refresh(refreshToken: string) {
+    return from(this.jwtService.verifyAsync<{ id: number }>(refreshToken)).pipe(
+      concatMap(({ id }) => from(this.findOneById(id))),
+      map((user) => this.createTokens(user)),
+      catchError(() => {
+        throw new UnauthorizedException('token expired')
       }),
     )
   }
