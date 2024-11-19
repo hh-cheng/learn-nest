@@ -1,7 +1,17 @@
-import { Controller, Get } from '@nestjs/common'
-import { AppService } from './app.service'
+import { Controller, Get, UseGuards } from '@nestjs/common'
+
+import { LoginGuard } from './login.guard'
 
 @Controller()
 export class AppController {
-  constructor(private readonly appService: AppService) {}
+  @Get()
+  index() {
+    return 'success'
+  }
+
+  @Get('login-test')
+  @UseGuards(LoginGuard)
+  loginTest() {
+    return 'success'
+  }
 }
