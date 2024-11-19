@@ -1,6 +1,13 @@
-import axios from 'axios'
-
+import axios, { type AxiosRequestConfig } from 'axios'
 import { useEffect, useState } from 'react'
+
+type PendingTask = {
+  config: AxiosRequestConfig
+  resolve: (...args: unknown[]) => unknown
+}
+
+let refreshing = false
+const queue: PendingTask[] = []
 
 axios.interceptors.request.use((config) => {
   const access_token = localStorage.getItem('access_token')
@@ -25,10 +32,22 @@ axios.interceptors.response.use(
   async (err) => {
     const { data, config } = err.response
 
+    if (refreshing) {
+      return new Promise((resolve) => {
+        queue.push({ config, resolve })
+      })
+    }
+
     if (data.statusCode === 500 && !config.url.includes('refresh')) {
+      refreshing = true
       const res = await refreshToken()
+      refreshing = false
 
       if (res.status === 200) {
+        queue.forEach(({ config, resolve }) => {
+          resolve(axios(config))
+        })
+
         return axios(config)
       } else {
         alert('login expired')
@@ -71,6 +90,9 @@ export default function useAppService() {
   }
 
   useEffect(() => {
+    query()
+    // manipulate multiple query calls when the access token is expired
+    query()
     query()
   }, [])
 
