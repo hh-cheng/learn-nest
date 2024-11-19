@@ -6,12 +6,12 @@ import { LoginGuard } from './login.guard'
 export class AppController {
   @Get()
   index() {
-    return 'success'
+    return 'index success'
   }
 
   @Get('login-test')
   @UseGuards(LoginGuard)
   loginTest() {
-    return 'success'
+    return 'login-test success'
   }
 }
