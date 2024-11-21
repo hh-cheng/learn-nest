@@ -4,6 +4,7 @@ import { AuthGuard } from '@nestjs/passport'
 import { Controller, Get, Inject, Post, Req, UseGuards } from '@nestjs/common'
 
 import { AppService } from './app.service'
+import { IsPublic } from './custom-decorator'
 
 declare module 'express' {
   interface Request {
@@ -35,5 +36,16 @@ export class AppController {
   list(@Req() req: Request) {
     console.log(req.user)
     return [1, 2, 3]
+  }
+
+  @IsPublic()
+  @Get('a')
+  a() {
+    return 'aaa'
+  }
+
+  @Get('b')
+  b() {
+    return 'bbb'
   }
 }
