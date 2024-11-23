@@ -215,6 +215,12 @@ importers:
         specifier: ^1.4.7
         version: 1.4.7
 
+  projects/15-nearby-search:
+    dependencies:
+      redis:
+        specifier: ^4.7.0
+        version: 4.7.0
+
   projects/3-upload-large-files:
     devDependencies:
       '@types/multer':
@@ -991,9 +997,6 @@ packages:
 
   '@types/multer@1.4.12':
     resolution: {integrity: sha512-pQ2hoqvXiJt2FP9WQVLPRO+AmiIm/ZYkavPlIQnx282u4ZrVdztx0pkh3jjpQt0Kz+YI0YhSG264y08UJKoUQg==}
-
-  '@types/node@20.17.7':
-    resolution: {integrity: sha512-sZXXnpBFMKbao30dUAvzKbdwA2JM1fwUtVEq/kxKuPI5mMwZiRElCpTXb0Biq/LMEVpXDZL5G5V0RPnxKeyaYg==}
 
   '@types/node@22.8.1':
     resolution: {integrity: sha512-k6Gi8Yyo8EtrNtkHXutUu2corfDf9su95VYVP10aGYMMROM6SAItZi0w1XszA6RtWTHSVp5OeFof37w0IEqCQg==}
@@ -4573,7 +4576,7 @@ snapshots:
       '@jest/schemas': 29.6.3
       '@types/istanbul-lib-coverage': 2.0.6
       '@types/istanbul-reports': 3.0.4
-      '@types/node': 20.17.7
+      '@types/node': 22.8.1
       '@types/yargs': 17.0.33
       chalk: 4.1.2
 
@@ -4971,10 +4974,6 @@ snapshots:
   '@types/multer@1.4.12':
     dependencies:
       '@types/express': 4.17.21
-
-  '@types/node@20.17.7':
-    dependencies:
-      undici-types: 6.19.8
 
   '@types/node@22.8.1':
     dependencies:
