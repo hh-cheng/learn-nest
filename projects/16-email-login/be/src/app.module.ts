@@ -1,15 +1,21 @@
 import { Module } from '@nestjs/common'
+import { ConfigModule } from '@nestjs/config'
 import { TypeOrmModule } from '@nestjs/typeorm'
 
 //* resources
 import { AppService } from './app.service'
 import { AppController } from './app.controller'
 import { UserModule } from './user/user.module'
+import { EmailModule } from './email/email.module'
 //* entities
 import { User } from './user/entities/user.entity'
 
 @Module({
   imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: 'src/.env',
+    }),
     TypeOrmModule.forRoot({
       type: 'mysql',
       host: 'localhost',
@@ -25,6 +31,7 @@ import { User } from './user/entities/user.entity'
       extra: { authPlugins: 'sha256_password' },
     }),
     UserModule,
+    EmailModule,
   ],
   controllers: [AppController],
   providers: [AppService],
