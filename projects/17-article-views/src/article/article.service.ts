@@ -17,20 +17,32 @@ export class ArticleService {
     return this.entityManager.findOneBy(Article, { id: +id })
   }
 
-  async view(id: string) {
+  async view(id: string, userId: number) {
     const articleId = `article_${id}`
+    const userIdInRedis = `user_${userId}_${articleId}`
     const articleInRedis = await this.redisService.hashGet(articleId)
 
     if (Object.keys(articleInRedis).length) {
+      if (await this.redisService.get(userIdInRedis)) {
+        return articleInRedis.viewCount
+      }
+
       await this.redisService.hashSet(articleId, {
         ...articleInRedis,
         viewCount: +articleInRedis.viewCount + 1,
       })
+      // the same user can contribute to the view count only once in 5 seconds
+      await this.redisService.set(userIdInRedis, 1, 5)
+      if (await this.redisService.get(userIdInRedis)) {
+        return articleInRedis.viewCount
+      }
       return +articleInRedis.viewCount + 1
     } else {
       const article = await this.findOne(id)
       article.viewCount++
       await this.redisService.hashSet(articleId, article)
+      // the same user can contribute to the view count only once in 5 seconds
+      await this.redisService.set(userIdInRedis, 1, 5)
       return article.viewCount
     }
   }
@@ -48,6 +60,7 @@ export class ArticleService {
       )
       await this.redisService.del(key)
     })
-    console.log('keys', keys)
+
+    console.log('flush done')
   }
 }

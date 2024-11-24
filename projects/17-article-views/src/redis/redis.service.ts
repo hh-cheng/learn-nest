@@ -10,6 +10,13 @@ export class RedisService {
     return this.redisClient.keys(pattern)
   }
 
+  async set(key: string, value: string | number, ttl?: number) {
+    await this.redisClient.set(key, value)
+    if (ttl) {
+      this.redisClient.expire(key, ttl)
+    }
+  }
+
   get(key: string) {
     return this.redisClient.get(key)
   }

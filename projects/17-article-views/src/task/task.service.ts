@@ -8,7 +8,7 @@ export class TaskService {
   @Inject()
   private readonly articleService: ArticleService
 
-  @Cron(CronExpression.EVERY_10_SECONDS)
+  @Cron(CronExpression.EVERY_DAY_AT_4AM)
   handleCron() {
     this.articleService.flushRedisToDb()
   }
