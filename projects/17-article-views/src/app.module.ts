@@ -5,6 +5,7 @@ import { TypeOrmModule } from '@nestjs/typeorm'
 import { AppService } from './app.service'
 import { AppController } from './app.controller'
 import { UserModule } from './user/user.module'
+import { RedisModule } from './redis/redis.module'
 import { ArticleModule } from './article/article.module'
 //* entities
 import { User } from './user/entities/user.entity'
@@ -26,6 +27,7 @@ import { Article } from './article/entities/article.entity'
       connectorPackage: 'mysql2',
       extra: { authPlugins: 'sha256_password' },
     }),
+    RedisModule,
     UserModule,
     ArticleModule,
   ],

@@ -24,6 +24,7 @@
     "es-toolkit": "^1.27.0",
     "express-session": "^1.18.1",
     "mysql2": "^3.11.4",
+    "redis": "^4.7.0",
     "typeorm": "^0.3.20"
   }
 }
