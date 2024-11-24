@@ -20,6 +20,7 @@
   },
   "dependencies": {
     "@nestjs/mapped-types": "*",
+    "@nestjs/schedule": "^4.1.1",
     "@nestjs/typeorm": "^10.0.2",
     "es-toolkit": "^1.27.0",
     "express-session": "^1.18.1",

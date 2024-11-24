@@ -1,9 +1,11 @@
 import { Module } from '@nestjs/common'
 import { TypeOrmModule } from '@nestjs/typeorm'
+import { ScheduleModule } from '@nestjs/schedule'
 
 //* resources
 import { AppService } from './app.service'
 import { AppController } from './app.controller'
+import { TaskModule } from './task/task.module'
 import { UserModule } from './user/user.module'
 import { RedisModule } from './redis/redis.module'
 import { ArticleModule } from './article/article.module'
@@ -27,6 +29,8 @@ import { Article } from './article/entities/article.entity'
       connectorPackage: 'mysql2',
       extra: { authPlugins: 'sha256_password' },
     }),
+    ScheduleModule.forRoot(),
+    TaskModule,
     RedisModule,
     UserModule,
     ArticleModule,

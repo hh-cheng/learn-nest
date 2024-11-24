@@ -6,6 +6,10 @@ export class RedisService {
   @Inject('REDIS_CLIENT')
   private readonly redisClient: RedisClientType
 
+  keys(pattern: string) {
+    return this.redisClient.keys(pattern)
+  }
+
   get(key: string) {
     return this.redisClient.get(key)
   }
@@ -23,5 +27,9 @@ export class RedisService {
     if (ttl) {
       this.redisClient.expire(key, ttl)
     }
+  }
+
+  del(key: string) {
+    return this.redisClient.del(key)
   }
 }

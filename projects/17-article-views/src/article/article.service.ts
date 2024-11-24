@@ -34,4 +34,20 @@ export class ArticleService {
       return article.viewCount
     }
   }
+
+  async flushRedisToDb() {
+    const keys = await this.redisService.keys('article_*')
+
+    keys.forEach(async (key) => {
+      const articleInRedis = await this.redisService.hashGet(key)
+      const [, id] = key.split('_')
+      await this.entityManager.update(
+        Article,
+        { id: +id },
+        { viewCount: +articleInRedis.viewCount },
+      )
+      await this.redisService.del(key)
+    })
+    console.log('keys', keys)
+  }
 }
