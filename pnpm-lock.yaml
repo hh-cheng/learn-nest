@@ -373,6 +373,12 @@ importers:
         specifier: ^1.18.0
         version: 1.18.0
 
+  projects/18-event-emitter:
+    dependencies:
+      '@nestjs/event-emitter':
+        specifier: ^2.1.1
+        version: 2.1.1(@nestjs/common@10.4.8(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/core@10.4.8)
+
 packages:
 
   '@alloc/quick-lru@5.2.0':
@@ -758,6 +764,12 @@ packages:
       '@nestjs/websockets':
         optional: true
 
+  '@nestjs/event-emitter@2.1.1':
+    resolution: {integrity: sha512-6L6fBOZTyfFlL7Ih/JDdqlCzZeCW0RjCX28wnzGyg/ncv5F/EOeT1dfopQr1loBRQ3LTgu8OWM7n4zLN4xigsg==}
+    peerDependencies:
+      '@nestjs/common': ^8.0.0 || ^9.0.0 || ^10.0.0
+      '@nestjs/core': ^8.0.0 || ^9.0.0 || ^10.0.0
+
   '@nestjs/jwt@10.2.0':
     resolution: {integrity: sha512-x8cG90SURkEiLOehNaN2aRlotxT0KZESUliOPKKnjWiyJOcWurkF3w345WOX0P4MgFzUjGoZ1Sy0aZnxeihT0g==}
     peerDependencies:
@@ -1049,6 +1061,9 @@ packages:
 
   '@types/multer@1.4.12':
     resolution: {integrity: sha512-pQ2hoqvXiJt2FP9WQVLPRO+AmiIm/ZYkavPlIQnx282u4ZrVdztx0pkh3jjpQt0Kz+YI0YhSG264y08UJKoUQg==}
+
+  '@types/node@20.17.7':
+    resolution: {integrity: sha512-sZXXnpBFMKbao30dUAvzKbdwA2JM1fwUtVEq/kxKuPI5mMwZiRElCpTXb0Biq/LMEVpXDZL5G5V0RPnxKeyaYg==}
 
   '@types/node@22.9.3':
     resolution: {integrity: sha512-F3u1fs/fce3FFk+DAxbxc78DF8x0cY09RRL8GnXLmkJ1jvx3TtPdWoTT5/NiYfI5ASqXBmfqJi9dZ3gxMx4lzw==}
@@ -2110,6 +2125,9 @@ packages:
   etag@1.8.1:
     resolution: {integrity: sha512-aIL5Fx7mawVa300al2BnEE4iNvo1qETxLrPI/o05L7z6go7fCw1J6EQmbK4FmJ2AS7kgVF/KEZWufBfdClMcPg==}
     engines: {node: '>= 0.6'}
+
+  eventemitter2@6.4.9:
+    resolution: {integrity: sha512-JEPTiaOt9f04oa6NOkc4aH+nVp5I3wEjpHbIPqfgCdD5v5bUzy7xQqwcVO2aDQgOWhI28da57HksMrzK9HlRxg==}
 
   eventemitter3@5.0.1:
     resolution: {integrity: sha512-GWkBvjiSZK87ELrYOSESUYeVIc9mvLLf/nXalMOS5dYrgZq9o5OVkbZAVM06CVxYsCwH9BDZFPlQTlPA1j4ahA==}
@@ -4644,7 +4662,7 @@ snapshots:
       '@jest/schemas': 29.6.3
       '@types/istanbul-lib-coverage': 2.0.6
       '@types/istanbul-reports': 3.0.4
-      '@types/node': 22.9.3
+      '@types/node': 20.17.7
       '@types/yargs': 17.0.33
       chalk: 4.1.2
 
@@ -4761,6 +4779,12 @@ snapshots:
       '@nestjs/platform-express': 10.4.8(@nestjs/common@10.4.8(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/core@10.4.8)
     transitivePeerDependencies:
       - encoding
+
+  '@nestjs/event-emitter@2.1.1(@nestjs/common@10.4.8(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/core@10.4.8)':
+    dependencies:
+      '@nestjs/common': 10.4.8(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1)
+      '@nestjs/core': 10.4.8(@nestjs/common@10.4.8(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/platform-express@10.4.8)(reflect-metadata@0.2.2)(rxjs@7.8.1)
+      eventemitter2: 6.4.9
 
   '@nestjs/jwt@10.2.0(@nestjs/common@10.4.8(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1))':
     dependencies:
@@ -5008,7 +5032,7 @@ snapshots:
 
   '@types/express-serve-static-core@5.0.1':
     dependencies:
-      '@types/node': 22.9.3
+      '@types/node': 20.17.7
       '@types/qs': 6.9.17
       '@types/range-parser': 1.2.7
       '@types/send': 0.17.4
@@ -5069,6 +5093,10 @@ snapshots:
   '@types/multer@1.4.12':
     dependencies:
       '@types/express': 5.0.0
+
+  '@types/node@20.17.7':
+    dependencies:
+      undici-types: 6.19.8
 
   '@types/node@22.9.3':
     dependencies:
@@ -6336,6 +6364,8 @@ snapshots:
 
   etag@1.8.1: {}
 
+  eventemitter2@6.4.9: {}
+
   eventemitter3@5.0.1: {}
 
   events@3.3.0: {}
@@ -6997,7 +7027,7 @@ snapshots:
   jest-util@29.7.0:
     dependencies:
       '@jest/types': 29.6.3
-      '@types/node': 22.9.3
+      '@types/node': 20.17.7
       chalk: 4.1.2
       ci-info: 3.9.0
       graceful-fs: 4.2.11
