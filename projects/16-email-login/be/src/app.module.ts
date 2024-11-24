@@ -7,6 +7,7 @@ import { AppService } from './app.service'
 import { AppController } from './app.controller'
 import { UserModule } from './user/user.module'
 import { EmailModule } from './email/email.module'
+import { RedisModule } from './redis/redis.module'
 //* entities
 import { User } from './user/entities/user.entity'
 
@@ -30,8 +31,9 @@ import { User } from './user/entities/user.entity'
       connectorPackage: 'mysql2',
       extra: { authPlugins: 'sha256_password' },
     }),
-    UserModule,
     EmailModule,
+    RedisModule,
+    UserModule,
   ],
   controllers: [AppController],
   providers: [AppService],
