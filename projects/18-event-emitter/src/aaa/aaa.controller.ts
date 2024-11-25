@@ -7,6 +7,6 @@ export class AaaController {
 
   @Get()
   index() {
-    return 'aaa'
+    return this.aaaService.findAll()
   }
 }

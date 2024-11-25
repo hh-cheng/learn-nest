@@ -7,7 +7,11 @@ import { AaaModule } from './aaa/aaa.module'
 import { BbbModule } from './bbb/bbb.module'
 
 @Module({
-  imports: [EventEmitterModule.forRoot(), AaaModule, BbbModule],
+  imports: [
+    EventEmitterModule.forRoot({ wildcard: true, delimiter: '.' }),
+    AaaModule,
+    BbbModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
