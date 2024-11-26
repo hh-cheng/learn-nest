@@ -1,11 +1,9 @@
-import { Controller, Sse } from '@nestjs/common'
-import { AppService } from './app.service'
 import { Observable } from 'rxjs'
+import { exec } from 'child_process'
+import { Controller, Sse } from '@nestjs/common'
 
 @Controller()
 export class AppController {
-  constructor(private readonly appService: AppService) {}
-
   @Sse('stream')
   stream() {
     return new Observable((observer) => {
@@ -18,6 +16,16 @@ export class AppController {
       setTimeout(() => {
         observer.next({ data: { msg: 'hh loves smq' } })
       }, 5000)
+    })
+  }
+
+  @Sse('stream2')
+  stream2() {
+    const childProcess = exec('tail -f ./log')
+    return new Observable((observer) => {
+      childProcess.stdout.on('data', (msg) => {
+        observer.next({ data: { msg: msg.toString() } })
+      })
     })
   }
 }
