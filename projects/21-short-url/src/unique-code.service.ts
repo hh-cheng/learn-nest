@@ -11,7 +11,7 @@ export class UniqueCodeService {
   @InjectEntityManager()
   private readonly entityManager: EntityManager
 
-  async generateCode() {
+  async generateCode(): Promise<UniqueCode> {
     const str = generateRandomStr(6)
     const uniqueCode = await this.entityManager.findOneBy(UniqueCode, {
       code: generateRandomStr(6),
@@ -21,7 +21,8 @@ export class UniqueCodeService {
       const code = new UniqueCode()
       code.code = str
       code.status = 0
-      return await this.entityManager.insert(UniqueCode, code)
+      await this.entityManager.insert(UniqueCode, code)
+      return code
     } else {
       return this.generateCode()
     }
