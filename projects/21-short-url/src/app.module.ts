@@ -3,7 +3,6 @@ import { TypeOrmModule } from '@nestjs/typeorm'
 import { ScheduleModule } from '@nestjs/schedule'
 
 //* resources
-import { AppService } from './app.service'
 import { AppController } from './app.controller'
 import { UniqueCodeService } from './unique-code.service'
 import { ShortLongMapService } from './short-long-map.service'
@@ -30,6 +29,6 @@ import { ShortLongMap } from './entities/ShortLongMap'
     }),
   ],
   controllers: [AppController],
-  providers: [AppService, UniqueCodeService, ShortLongMapService],
+  providers: [UniqueCodeService, ShortLongMapService],
 })
 export class AppModule {}

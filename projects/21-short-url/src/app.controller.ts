@@ -1,7 +1,14 @@
-import { Controller } from '@nestjs/common'
-import { AppService } from './app.service'
+import { Controller, Get, Inject, Query } from '@nestjs/common'
+
+import { ShortLongMapService } from './short-long-map.service'
 
 @Controller()
 export class AppController {
-  constructor(private readonly appService: AppService) {}
+  @Inject()
+  private readonly shortLongMapService: ShortLongMapService
+
+  @Get('shorten-url')
+  shortenUrl(@Query('url') url: string) {
+    return this.shortLongMapService.generate(url)
+  }
 }
