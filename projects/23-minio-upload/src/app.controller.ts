@@ -1,5 +1,5 @@
 import * as Minio from 'minio'
-import { Controller, Get, Inject } from '@nestjs/common'
+import { Controller, Get, Inject, Query } from '@nestjs/common'
 
 import { AppService } from './app.service'
 import { MINIO_CLIENT } from './minio/minio.module'
@@ -20,5 +20,10 @@ export class AppController {
       console.log(err)
       return 'Upload failed'
     }
+  }
+
+  @Get('presignedUrl')
+  async presignedUrl(@Query('name') name: string) {
+    return this.minioClient.presignedPutObject('test', name, 60 * 60)
   }
 }
