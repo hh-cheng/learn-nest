@@ -2,9 +2,10 @@ import { Module } from '@nestjs/common'
 
 import { AppService } from './app.service'
 import { AppController } from './app.controller'
+import { MinioModule } from './minio/minio.module'
 
 @Module({
-  imports: [],
+  imports: [MinioModule],
   controllers: [AppController],
   providers: [AppService],
 })
