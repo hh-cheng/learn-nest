@@ -1,4 +1,4 @@
-import sharp from 'sharp'
+import * as sharp from 'sharp'
 import { existsSync } from 'fs'
 import type { Response } from 'express'
 import { FileInterceptor } from '@nestjs/platform-express'
