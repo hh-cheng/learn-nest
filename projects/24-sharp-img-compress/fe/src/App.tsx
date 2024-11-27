@@ -7,7 +7,7 @@ export default function App() {
   return (
     <Dragger
       name="file"
-      action="http://localhost:3000"
+      action="http://localhost:3000/upload"
       onChange={(info) => {
         const { status } = info.file
         if (status === 'done') {

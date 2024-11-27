@@ -821,6 +821,9 @@ importers:
       rxjs:
         specifier: ^7.8.1
         version: 7.8.1
+      sharp:
+        specifier: ^0.33.5
+        version: 0.33.5
     devDependencies:
       '@nestjs/cli':
         specifier: ^10.0.0
@@ -837,6 +840,9 @@ importers:
       '@types/jest':
         specifier: ^29.5.2
         version: 29.5.14
+      '@types/multer':
+        specifier: ^1.4.12
+        version: 1.4.12
       '@types/node':
         specifier: ^20.3.1
         version: 20.17.8
@@ -10403,7 +10409,6 @@ snapshots:
     dependencies:
       color-convert: 2.0.1
       color-string: 1.9.1
-    optional: true
 
   colord@2.9.3: {}
 
@@ -10668,8 +10673,7 @@ snapshots:
 
   destroy@1.2.0: {}
 
-  detect-libc@2.0.3:
-    optional: true
+  detect-libc@2.0.3: {}
 
   detect-newline@3.1.0: {}
 
@@ -13889,7 +13893,6 @@ snapshots:
       '@img/sharp-wasm32': 0.33.5
       '@img/sharp-win32-ia32': 0.33.5
       '@img/sharp-win32-x64': 0.33.5
-    optional: true
 
   shebang-command@2.0.0:
     dependencies:
