@@ -11,7 +11,6 @@ export default function App() {
   const [filename, setFilename] = useState('')
 
   const compress = async (values: { color: string }) => {
-    console.log('hh values', values)
     const res = await axios.get('http://localhost:3000/compress', {
       params: { path: filePath, color: values.color },
       responseType: 'arraybuffer',
