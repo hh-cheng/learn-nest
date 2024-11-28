@@ -1,0 +1,5 @@
+{
+  "usernameNotEmpty": "用户名不能为空",
+  "passwordNotEmpty": "密码不能为空",
+  "passwordMinLength": "密码长度至少为6位"
+}

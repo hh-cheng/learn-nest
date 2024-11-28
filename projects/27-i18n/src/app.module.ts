@@ -10,6 +10,7 @@ import {
 
 import { AppService } from './app.service'
 import { AppController } from './app.controller'
+import { UserModule } from './user/user.module'
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { AppController } from './app.controller'
         AcceptLanguageResolver,
       ],
     }),
+    UserModule,
   ],
   controllers: [AppController],
   providers: [AppService],
