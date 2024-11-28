@@ -3,5 +3,8 @@
   "collection": "@nestjs/schematics",
   "sourceRoot": "src",
   "generateOptions": { "spec": false },
-  "compilerOptions": { "deleteOutDir": true }
+  "compilerOptions": {
+    "deleteOutDir": true,
+    "assets": [{ "include": "i18n/**/*", "watchAssets": true }]
+  }
 }
