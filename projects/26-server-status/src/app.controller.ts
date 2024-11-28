@@ -8,10 +8,11 @@ export class AppController {
   private readonly appService: AppService
 
   @Get('status')
-  status() {
+  async status() {
     return {
       cpu: this.appService.getCpuInfo(),
       mem: this.appService.getMemInfo(),
+      dist: await this.appService.getDiskInfo(),
     }
   }
 }

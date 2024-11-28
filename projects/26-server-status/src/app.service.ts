@@ -1,4 +1,5 @@
 import * as os from 'os'
+import * as nodeDiskInfo from 'node-disk-info'
 
 export class AppService {
   bytesToGB(bytes: number) {
@@ -49,5 +50,20 @@ export class AppService {
       usage: `${memoryUsagePercentage}%`,
     }
     return mem
+  }
+
+  async getDiskInfo() {
+    const disks = await nodeDiskInfo.getDiskInfo()
+    const sysFiles = disks.map((disk: any) => {
+      return {
+        dirName: disk._mounted,
+        typeName: disk._filesystem,
+        total: `${this.bytesToGB(disk._blocks)}G`,
+        used: `${this.bytesToGB(disk._used)}G`,
+        free: `${this.bytesToGB(disk._available)}G`,
+        usage: ((disk._used / disk._blocks || 0) * 100).toFixed(2),
+      }
+    })
+    return sysFiles
   }
 }
