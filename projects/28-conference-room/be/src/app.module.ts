@@ -9,6 +9,7 @@ import { AppService } from './app.service'
 import { AppController } from './app.controller'
 import { UserModule } from './user/user.module'
 import { RedisModule } from './redis/redis.module'
+import { EmailModule } from './email/email.module'
 //* entities
 import { User } from './user/entities/user.entity'
 import { Role } from './user/entities/role.entity'
@@ -16,6 +17,7 @@ import { Permission } from './user/entities/permission.entity'
 
 @Module({
   imports: [
+    EmailModule,
     RedisModule,
     ConfigModule.forRoot({ isGlobal: true, envFilePath: 'src/.env' }),
     TypeOrmModule.forRootAsync({

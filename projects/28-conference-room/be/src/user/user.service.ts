@@ -2,8 +2,9 @@ import type { EntityManager } from 'typeorm'
 import { InjectEntityManager } from '@nestjs/typeorm'
 import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common'
 
-import { md5 } from 'src/utils'
+import { md5, genCode } from 'src/utils'
 import { User } from './entities/user.entity'
+import { EmailService } from 'src/email/email.service'
 import { RedisService } from 'src/redis/redis.service'
 import { RegisterUserDto } from './dto/registerUser.dto'
 
@@ -14,6 +15,20 @@ export class UserService {
 
   @Inject()
   private readonly redisService: RedisService
+
+  @Inject()
+  private readonly emailService: EmailService
+
+  async getCaptcha(address: string) {
+    const code = genCode()
+    await this.redisService.set(`captcha_${address}`, code, 60 * 5)
+    await this.emailService.sendMail({
+      to: address,
+      subject: 'register captcha',
+      html: `<p>your captcha is ${code}</p>`,
+    })
+    return 'captcha sent'
+  }
 
   async register(registerUser: RegisterUserDto) {
     const captcha = await this.redisService.get(`captcha_${registerUser.email}`)
