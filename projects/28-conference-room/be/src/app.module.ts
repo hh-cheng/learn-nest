@@ -8,6 +8,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config'
 import { AppService } from './app.service'
 import { AppController } from './app.controller'
 import { UserModule } from './user/user.module'
+import { RedisModule } from './redis/redis.module'
 //* entities
 import { User } from './user/entities/user.entity'
 import { Role } from './user/entities/role.entity'
@@ -15,6 +16,7 @@ import { Permission } from './user/entities/permission.entity'
 
 @Module({
   imports: [
+    RedisModule,
     ConfigModule.forRoot({ isGlobal: true, envFilePath: 'src/.env' }),
     TypeOrmModule.forRootAsync({
       useFactory(configService: ConfigService) {
