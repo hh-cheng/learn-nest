@@ -23,16 +23,16 @@ import { Permission } from './user/entities/permission.entity'
     TypeOrmModule.forRootAsync({
       useFactory(configService: ConfigService) {
         return {
-          port: 3306,
+          type: 'mysql',
+          poolSize: 10,
           logging: true,
           synchronize: true,
-          type: 'mysql',
-          host: 'localhost',
-          database: 'conference_room',
+          host: configService.get('db_host'),
+          port: configService.get('db_port'),
+          database: configService.get('db_name'),
           username: configService.get('db_username'),
           password: configService.get('db_password'),
           entities: [User, Role, Permission],
-          poolSize: 10,
           connectorPackage: 'mysql2',
           extra: { authPlugins: 'sha256_password' },
         }

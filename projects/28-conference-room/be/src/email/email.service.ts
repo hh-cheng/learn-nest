@@ -10,7 +10,7 @@ export class EmailService {
     this.transporter = createTransport({
       secure: false,
       host: this.configService.get('email_host'),
-      port: +this.configService.get('email_port'),
+      port: this.configService.get('email_port'),
       auth: {
         user: this.configService.get('email_user'),
         pass: this.configService.get('email_auth'),
