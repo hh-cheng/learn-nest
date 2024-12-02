@@ -2,6 +2,7 @@ import { Body, Controller, Get, Post, Query } from '@nestjs/common'
 
 import { UserService } from './user.service'
 import { CaptchaDto } from './dto/captcha.dto'
+import { LoginUserDto } from './dto/loginUser.dto'
 import { RegisterUserDto } from './dto/registerUser.dto'
 
 @Controller('user')
@@ -21,5 +22,10 @@ export class UserController {
   @Post('register')
   register(@Body() registerUser: RegisterUserDto) {
     return this.userService.register(registerUser)
+  }
+
+  @Post('login')
+  login(@Body() loginUser: LoginUserDto) {
+    return this.userService.login(loginUser)
   }
 }
