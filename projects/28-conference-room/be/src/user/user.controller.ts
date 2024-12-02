@@ -8,6 +8,11 @@ import { RegisterUserDto } from './dto/registerUser.dto'
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
+  // @Get('init-data')
+  // initData() {
+  //   return this.userService.initData()
+  // }
+
   @Get('getCaptcha')
   getCaptcha(@Query() queryProps: CaptchaDto) {
     return this.userService.getCaptcha(queryProps.email)
