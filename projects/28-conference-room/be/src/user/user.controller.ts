@@ -28,4 +28,9 @@ export class UserController {
   login(@Body() loginUser: LoginUserDto) {
     return this.userService.login(loginUser)
   }
+
+  @Get('refresh')
+  refresh(@Query('refresh_token') refreshToken: string) {
+    return this.userService.refresh(refreshToken)
+  }
 }

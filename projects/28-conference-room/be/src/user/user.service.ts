@@ -1,8 +1,15 @@
 import { JwtService } from '@nestjs/jwt'
 import type { EntityManager } from 'typeorm'
 import { ConfigService } from '@nestjs/config'
+import { catchError, concatMap, from } from 'rxjs'
 import { InjectEntityManager } from '@nestjs/typeorm'
-import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common'
+import {
+  HttpException,
+  HttpStatus,
+  Inject,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common'
 
 import { getPermissions } from './utils'
 import { md5, genCode } from 'src/utils'
@@ -97,6 +104,25 @@ export class UserService {
         roles: user.roles.map((role) => role.name),
       },
       ...tokens,
+    })
+  }
+
+  refresh(refreshToken: string) {
+    return from(this.jwtService.verifyAsync(refreshToken)).pipe(
+      concatMap(({ userId }) => this.findUserById(userId)),
+      concatMap((user) => this.genAccessAndRefreshToken(user)),
+      catchError(() => {
+        throw new UnauthorizedException(
+          'Token has expired. Please log in again.',
+        )
+      }),
+    )
+  }
+
+  private findUserById(id: number) {
+    return this.entityManager.findOne(User, {
+      where: { id },
+      relations: ['roles', 'roles.permissions'],
     })
   }
 
