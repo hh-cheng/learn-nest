@@ -1,4 +1,6 @@
+import { JwtService } from '@nestjs/jwt'
 import type { EntityManager } from 'typeorm'
+import { ConfigService } from '@nestjs/config'
 import { InjectEntityManager } from '@nestjs/typeorm'
 import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common'
 
@@ -21,6 +23,12 @@ export class UserService {
 
   @Inject()
   private readonly emailService: EmailService
+
+  @Inject()
+  private readonly configService: ConfigService
+
+  @Inject()
+  private readonly jwtService: JwtService
 
   async getCaptcha(address: string) {
     const code = genCode()
@@ -80,49 +88,43 @@ export class UserService {
       throw new HttpException('Password is incorrect', HttpStatus.BAD_REQUEST)
     }
 
+    const tokens = await this.genAccessAndRefreshToken(user)
+
     return loginUserVo.parse({
       userInfo: {
         ...user,
         permissions: getPermissions(user.roles),
         roles: user.roles.map((role) => role.name),
       },
-      accessToken: '',
-      refreshToken: '',
+      ...tokens,
     })
   }
-}
 
-// async initData() {
-//   const user1 = new User()
-//   user1.username = 'hh'
-//   user1.nickName = 'hh'
-//   user1.password = md5('111111')
-//   user1.email = '1003306162@qq.com'
-//   user1.isAdmin = true
-//   user1.phone = '12311112222'
-//   const user2 = new User()
-//   user2.username = 'smq'
-//   user2.nickName = 'smq'
-//   user2.password = md5('222222')
-//   user2.email = 'bonelycheng@gmail.com'
-//   user2.isAdmin = false
-//   user2.phone = '12311112222'
-//   const role1 = new Role()
-//   role1.name = 'admin'
-//   const role2 = new Role()
-//   role2.name = 'user'
-//   const permission1 = new Permission()
-//   permission1.code = 'testA'
-//   permission1.description = 'access to testA'
-//   const permission2 = new Permission()
-//   permission2.code = 'testB'
-//   permission2.description = 'access to testB'
-//   user1.roles = [role1]
-//   user2.roles = [role2]
-//   role1.permissions = [permission1, permission2]
-//   role2.permissions = [permission1]
-//   await this.entityManager.save([permission1, permission2])
-//   await this.entityManager.save([role1, role2])
-//   await this.entityManager.save([user1, user2])
-//   return 'done'
-// }
+  private async genAccessAndRefreshToken(user: User) {
+    const { id, username, roles } = user
+    const permissions = getPermissions(roles)
+
+    const accessToken = this.jwtService.sign(
+      {
+        userId: id,
+        username,
+        permissions,
+        roles: roles.map(({ name }) => name),
+      },
+      {
+        expiresIn:
+          this.configService.get('jwt_access_token_expires_time') ?? '30m',
+      },
+    )
+
+    const refreshToken = this.jwtService.sign(
+      { userId: id },
+      {
+        expiresIn:
+          this.configService.get('jwt_refresh_token_expires_time') ?? '7d',
+      },
+    )
+
+    return { accessToken, refreshToken }
+  }
+}

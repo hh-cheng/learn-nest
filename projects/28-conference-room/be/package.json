@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "@nestjs/config": "^3.3.0",
+    "@nestjs/jwt": "^10.2.0",
     "@nestjs/mapped-types": "*",
     "@nestjs/typeorm": "^10.0.2",
     "es-toolkit": "^1.27.0",

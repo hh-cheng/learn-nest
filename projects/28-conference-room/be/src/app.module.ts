@@ -14,6 +14,7 @@ import { EmailModule } from './email/email.module'
 import { User } from './user/entities/user.entity'
 import { Role } from './user/entities/role.entity'
 import { Permission } from './user/entities/permission.entity'
+import { JwtModule } from '@nestjs/jwt'
 
 @Module({
   imports: [
@@ -35,6 +36,16 @@ import { Permission } from './user/entities/permission.entity'
           entities: [User, Role, Permission],
           connectorPackage: 'mysql2',
           extra: { authPlugins: 'sha256_password' },
+        }
+      },
+      inject: [ConfigService],
+    }),
+    JwtModule.registerAsync({
+      global: true,
+      useFactory(configService: ConfigService) {
+        return {
+          secret: configService.get('jwt_secret'),
+          signOptions: { expiresIn: '30m' },
         }
       },
       inject: [ConfigService],
