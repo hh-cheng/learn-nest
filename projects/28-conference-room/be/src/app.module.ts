@@ -1,7 +1,8 @@
+import { JwtModule } from '@nestjs/jwt'
 import { Module } from '@nestjs/common'
-import { APP_PIPE } from '@nestjs/core'
 import { ZodValidationPipe } from 'nestjs-zod'
 import { TypeOrmModule } from '@nestjs/typeorm'
+import { APP_GUARD, APP_PIPE } from '@nestjs/core'
 import { ConfigModule, ConfigService } from '@nestjs/config'
 
 //* resources
@@ -14,7 +15,9 @@ import { EmailModule } from './email/email.module'
 import { User } from './user/entities/user.entity'
 import { Role } from './user/entities/role.entity'
 import { Permission } from './user/entities/permission.entity'
-import { JwtModule } from '@nestjs/jwt'
+//* guards
+import { LoginGuard } from './login.guard'
+import { PermissionGuard } from './permission.guard'
 
 @Module({
   imports: [
@@ -57,6 +60,14 @@ import { JwtModule } from '@nestjs/jwt'
     {
       provide: APP_PIPE,
       useClass: ZodValidationPipe,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: LoginGuard,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: PermissionGuard,
     },
     AppService,
   ],
