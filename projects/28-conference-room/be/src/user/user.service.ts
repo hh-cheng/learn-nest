@@ -2,27 +2,31 @@ import { JwtService } from '@nestjs/jwt'
 import type { EntityManager } from 'typeorm'
 import { ConfigService } from '@nestjs/config'
 import { InjectEntityManager } from '@nestjs/typeorm'
-import { catchError, concatMap, from, map } from 'rxjs'
+import { catchError, concatMap, from, map, of, tap } from 'rxjs'
 import {
   HttpException,
   HttpStatus,
   Inject,
   Injectable,
+  Logger,
   UnauthorizedException,
 } from '@nestjs/common'
 
 import { getPermissions } from './utils'
 import { md5, genCode } from 'src/utils'
 import { User } from './entities/user.entity'
+import { userInfoVo } from './vo/userInfo.vo'
 import { loginUserVo } from './vo/loginUser.vo'
 import { LoginUserDto } from './dto/loginUser.dto'
 import { EmailService } from 'src/email/email.service'
 import { RedisService } from 'src/redis/redis.service'
 import { RegisterUserDto } from './dto/registerUser.dto'
-import { userInfoVo } from './vo/userInfo.vo'
+import { UpdatePasswordDto } from './dto/updatePassword.dto'
 
 @Injectable()
 export class UserService {
+  private logger = new Logger(UserService.name)
+
   @InjectEntityManager()
   private readonly entityManager: EntityManager
 
@@ -123,6 +127,41 @@ export class UserService {
   findUserDetailById(userId: number) {
     return from(this.entityManager.findOneBy(User, { id: userId })).pipe(
       map((user) => userInfoVo.parse(user)),
+    )
+  }
+
+  updatePassword(userId: number, updatePasswordDto: UpdatePasswordDto) {
+    return from(
+      this.redisService.get(
+        `update_password_captcha_${updatePasswordDto.email}`,
+      ),
+    ).pipe(
+      tap((captcha) => {
+        if (!captcha) {
+          throw new HttpException('Captcha expired', HttpStatus.BAD_REQUEST)
+        }
+      }),
+      tap((captcha) => {
+        if (captcha !== updatePasswordDto.captcha) {
+          throw new HttpException(
+            'Captcha is incorrect',
+            HttpStatus.BAD_REQUEST,
+          )
+        }
+      }),
+      concatMap(() => from(this.entityManager.findOneBy(User, { id: userId }))),
+      map((foundUser) => {
+        foundUser.password = md5(updatePasswordDto.password)
+        return foundUser
+      }),
+      concatMap((user) =>
+        this.entityManager.update(User, { id: userId }, user),
+      ),
+      map(() => 'update password success'),
+      catchError((err) => {
+        this.logger.error(err)
+        return of('update password failed')
+      }),
     )
   }
 

@@ -11,7 +11,8 @@ import { UserService } from './user.service'
 import { CaptchaDto } from './dto/captcha.dto'
 import { LoginUserDto } from './dto/loginUser.dto'
 import { RegisterUserDto } from './dto/registerUser.dto'
-import { RequireLogin } from 'src/custom-decorators'
+import { RequireLogin, UserInfo } from 'src/custom-decorators'
+import { UpdatePasswordDto } from './dto/updatePassword.dto'
 
 @Controller('user')
 export class UserController {
@@ -46,5 +47,14 @@ export class UserController {
   @RequireLogin()
   info(@Query('userId', ParseIntPipe) userId: number) {
     return this.userService.findUserDetailById(userId)
+  }
+
+  @Post('update_password')
+  @RequireLogin()
+  updatePassword(
+    @UserInfo('userId') userId: number,
+    @Body() updatePasswordDto: UpdatePasswordDto,
+  ) {
+    return this.userService.updatePassword(userId, updatePasswordDto)
   }
 }
