@@ -157,11 +157,38 @@ export class UserService {
       concatMap((user) =>
         this.entityManager.update(User, { id: userId }, user),
       ),
+      concatMap(() =>
+        this.redisService.del(
+          `update_password_captcha_${updatePasswordDto.email}`,
+        ),
+      ),
       map(() => 'update password success'),
       catchError((err) => {
         this.logger.error(err)
         return of('update password failed')
       }),
+    )
+  }
+
+  updatePasswordCaptcha(address: string) {
+    const code = genCode()
+    return from(
+      this.redisService.set(
+        `update_password_captcha_${address}`,
+        code,
+        60 * 10,
+      ),
+    ).pipe(
+      concatMap(() =>
+        from(
+          this.emailService.sendMail({
+            to: address,
+            subject: 'update password captcha',
+            html: `<p>Your captcha is ${code}</p>`,
+          }),
+        ),
+      ),
+      map(() => 'captcha sent'),
     )
   }
 
