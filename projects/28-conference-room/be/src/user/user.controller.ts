@@ -1,9 +1,17 @@
-import { Body, Controller, Get, Post, Query } from '@nestjs/common'
+import {
+  Body,
+  Controller,
+  Get,
+  ParseIntPipe,
+  Post,
+  Query,
+} from '@nestjs/common'
 
 import { UserService } from './user.service'
 import { CaptchaDto } from './dto/captcha.dto'
 import { LoginUserDto } from './dto/loginUser.dto'
 import { RegisterUserDto } from './dto/registerUser.dto'
+import { RequireLogin } from 'src/custom-decorators'
 
 @Controller('user')
 export class UserController {
@@ -32,5 +40,11 @@ export class UserController {
   @Get('refresh')
   refresh(@Query('refresh_token') refreshToken: string) {
     return this.userService.refresh(refreshToken)
+  }
+
+  @Get('info')
+  @RequireLogin()
+  info(@Query('userId', ParseIntPipe) userId: number) {
+    return this.userService.findUserDetailById(userId)
   }
 }

@@ -1,8 +1,8 @@
 import { JwtService } from '@nestjs/jwt'
 import type { EntityManager } from 'typeorm'
 import { ConfigService } from '@nestjs/config'
-import { catchError, concatMap, from } from 'rxjs'
 import { InjectEntityManager } from '@nestjs/typeorm'
+import { catchError, concatMap, from, map } from 'rxjs'
 import {
   HttpException,
   HttpStatus,
@@ -19,6 +19,7 @@ import { LoginUserDto } from './dto/loginUser.dto'
 import { EmailService } from 'src/email/email.service'
 import { RedisService } from 'src/redis/redis.service'
 import { RegisterUserDto } from './dto/registerUser.dto'
+import { userInfoVo } from './vo/userInfo.vo'
 
 @Injectable()
 export class UserService {
@@ -116,6 +117,12 @@ export class UserService {
           'Token has expired. Please log in again.',
         )
       }),
+    )
+  }
+
+  findUserDetailById(userId: number) {
+    return from(this.entityManager.findOneBy(User, { id: userId })).pipe(
+      map((user) => userInfoVo.parse(user)),
     )
   }
 
