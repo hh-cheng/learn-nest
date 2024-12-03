@@ -10,6 +10,7 @@ import {
 import { UserService } from './user.service'
 import { CaptchaDto } from './dto/captcha.dto'
 import { LoginUserDto } from './dto/loginUser.dto'
+import { UpdateUserDto } from './dto/updateUser.dto'
 import { RegisterUserDto } from './dto/registerUser.dto'
 import { RequireLogin, UserInfo } from 'src/custom-decorators'
 import { UpdatePasswordDto } from './dto/updatePassword.dto'
@@ -62,5 +63,20 @@ export class UserController {
   @RequireLogin()
   updatePasswordCaptcha(@Query('address') address: string) {
     return this.userService.updatePasswordCaptcha(address)
+  }
+
+  @Post('update_user_info')
+  @RequireLogin()
+  update(
+    @UserInfo('userId') userId: number,
+    @Body() updateUserDto: UpdateUserDto,
+  ) {
+    return this.userService.updateUserInfo(userId, updateUserDto)
+  }
+
+  @Get('update_user_info_captcha')
+  @RequireLogin()
+  updateUserInfoCaptcha(@Query('address') address: string) {
+    return this.userService.updateUserInfoCaptcha(address)
   }
 }

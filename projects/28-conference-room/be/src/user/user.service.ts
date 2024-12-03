@@ -18,6 +18,7 @@ import { User } from './entities/user.entity'
 import { userInfoVo } from './vo/userInfo.vo'
 import { loginUserVo } from './vo/loginUser.vo'
 import { LoginUserDto } from './dto/loginUser.dto'
+import { UpdateUserDto } from './dto/updateUser.dto'
 import { EmailService } from 'src/email/email.service'
 import { RedisService } from 'src/redis/redis.service'
 import { RegisterUserDto } from './dto/registerUser.dto'
@@ -184,6 +185,60 @@ export class UserService {
           this.emailService.sendMail({
             to: address,
             subject: 'update password captcha',
+            html: `<p>Your captcha is ${code}</p>`,
+          }),
+        ),
+      ),
+      map(() => 'captcha sent'),
+    )
+  }
+
+  updateUserInfo(userId: number, updateUserDto: UpdateUserDto) {
+    const redisKey = `update_user_captcha_${updateUserDto.email}`
+    return from(this.redisService.get(redisKey)).pipe(
+      tap((captcha) => {
+        if (!captcha) {
+          throw new HttpException('Captcha expired', HttpStatus.BAD_REQUEST)
+        }
+      }),
+      tap((captcha) => {
+        if (captcha !== updateUserDto.captcha) {
+          throw new HttpException(
+            'Captcha is incorrect',
+            HttpStatus.BAD_REQUEST,
+          )
+        }
+      }),
+      concatMap(() => from(this.entityManager.findOneBy(User, { id: userId }))),
+      map((foundUser) => {
+        const { avatar, nickName } = updateUserDto
+        if (avatar) foundUser.avatar = avatar
+        if (nickName) foundUser.nickName = nickName
+        return foundUser
+      }),
+      concatMap((user) =>
+        from(this.entityManager.update(User, { id: userId }, user)),
+      ),
+      concatMap(() => this.redisService.del(redisKey)),
+      map(() => 'update user info success'),
+      catchError((err) => {
+        this.logger.error(err)
+        return of('update user info failed')
+      }),
+    )
+  }
+
+  updateUserInfoCaptcha(address: string) {
+    const code = genCode()
+
+    return from(
+      this.redisService.set(`update_user_captcha_${address}`, code, 60 * 10),
+    ).pipe(
+      concatMap(() =>
+        from(
+          this.emailService.sendMail({
+            to: address,
+            subject: 'update user info captcha',
             html: `<p>Your captcha is ${code}</p>`,
           }),
         ),
