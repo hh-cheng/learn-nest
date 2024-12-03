@@ -1,7 +1,7 @@
 import { NestFactory } from '@nestjs/core'
 
 import { AppModule } from './app.module'
-import { FormatResponseInterceptor } from './format-response.interceptor'
+import { FormatResponseInterceptor } from './interceptor/format-response.interceptor'
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule)
