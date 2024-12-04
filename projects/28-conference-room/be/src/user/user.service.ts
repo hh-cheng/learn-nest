@@ -14,6 +14,7 @@ import {
 
 import { getPermissions } from './utils'
 import { md5, genCode } from 'src/utils'
+import { ListDto } from './dto/list.dto'
 import { User } from './entities/user.entity'
 import { userInfoVo } from './vo/userInfo.vo'
 import { loginUserVo } from './vo/loginUser.vo'
@@ -279,6 +280,17 @@ export class UserService {
         return of('unfreeze failed')
       }),
     )
+  }
+
+  list(listDto: ListDto) {
+    const { pageIndex, pageSize } = listDto
+    const skip = pageIndex - 1
+    return from(
+      this.entityManager.findAndCount(User, {
+        skip,
+        take: pageSize,
+      }),
+    ).pipe(map(([users, totalCount]) => ({ users, totalCount })))
   }
 
   private findUserById(id: number) {

@@ -7,6 +7,7 @@ import {
   Query,
 } from '@nestjs/common'
 
+import { ListDto } from './dto/list.dto'
 import { UserService } from './user.service'
 import { CaptchaDto } from './dto/captcha.dto'
 import { LoginUserDto } from './dto/loginUser.dto'
@@ -90,5 +91,11 @@ export class UserController {
   @RequireLogin()
   unfreeze(@Query('id', ParseIntPipe) userId: number) {
     return this.userService.unfreezeByUserId(userId)
+  }
+
+  @Get('list')
+  @RequireLogin()
+  list(@Query() listDto: ListDto) {
+    return this.userService.list(listDto)
   }
 }
