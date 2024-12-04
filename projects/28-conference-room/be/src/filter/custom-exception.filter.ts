@@ -12,11 +12,15 @@ export class CustomExceptionFilter implements ExceptionFilter {
     const response = host.switchToHttp().getResponse<Response>()
     response.statusCode = exception.getStatus()
 
+    const res = exception.getResponse() as { message: string | string[] }
+
     response
       .json({
         message: 'fail',
-        data: exception.message,
         code: exception.getStatus(),
+        data:
+          (Array.isArray(res.message) ? res.message.join(',') : res.message) ??
+          exception.message,
       })
       .end()
   }
