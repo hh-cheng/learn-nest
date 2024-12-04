@@ -12,8 +12,8 @@ import { CaptchaDto } from './dto/captcha.dto'
 import { LoginUserDto } from './dto/loginUser.dto'
 import { UpdateUserDto } from './dto/updateUser.dto'
 import { RegisterUserDto } from './dto/registerUser.dto'
-import { RequireLogin, UserInfo } from 'src/custom-decorators'
 import { UpdatePasswordDto } from './dto/updatePassword.dto'
+import { RequireLogin, UserInfo } from 'src/custom-decorators'
 
 @Controller('user')
 export class UserController {
@@ -78,5 +78,17 @@ export class UserController {
   @RequireLogin()
   updateUserInfoCaptcha(@Query('address') address: string) {
     return this.userService.updateUserInfoCaptcha(address)
+  }
+
+  @Get('freeze')
+  @RequireLogin()
+  freeze(@Query('id', ParseIntPipe) userId: number) {
+    return this.userService.freezeByUserId(userId)
+  }
+
+  @Get('unfreeze')
+  @RequireLogin()
+  unfreeze(@Query('id', ParseIntPipe) userId: number) {
+    return this.userService.unfreezeByUserId(userId)
   }
 }

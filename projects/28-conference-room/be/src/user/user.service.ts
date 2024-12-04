@@ -247,6 +247,40 @@ export class UserService {
     )
   }
 
+  freezeByUserId(userId: number) {
+    return from(this.findUserById(userId)).pipe(
+      map((user) => {
+        user.isFrozen = true
+        return user
+      }),
+      concatMap((user) =>
+        this.entityManager.update(User, { id: userId }, user),
+      ),
+      map(() => 'freeze success'),
+      catchError((err) => {
+        this.logger.error(err)
+        return of('freeze failed')
+      }),
+    )
+  }
+
+  unfreezeByUserId(userId: number) {
+    return from(this.findUserById(userId)).pipe(
+      map((user) => {
+        user.isFrozen = false
+        return user
+      }),
+      concatMap((user) =>
+        this.entityManager.update(User, { id: userId }, user),
+      ),
+      map(() => 'unfreeze success'),
+      catchError((err) => {
+        this.logger.error(err)
+        return of('unfreeze failed')
+      }),
+    )
+  }
+
   private findUserById(id: number) {
     return this.entityManager.findOne(User, {
       where: { id },
