@@ -1,6 +1,6 @@
 import { JwtService } from '@nestjs/jwt'
-import type { EntityManager } from 'typeorm'
 import { ConfigService } from '@nestjs/config'
+import { Like, type EntityManager } from 'typeorm'
 import { InjectEntityManager } from '@nestjs/typeorm'
 import { catchError, concatMap, from, map, of, tap } from 'rxjs'
 import {
@@ -283,12 +283,28 @@ export class UserService {
   }
 
   list(listDto: ListDto) {
-    const { pageIndex, pageSize } = listDto
+    const { pageIndex, pageSize, ..._conditions } = listDto
     const skip = pageIndex - 1
+
+    const conditions: Record<string, unknown> = { ..._conditions }
+    conditions.email &&= Like(`%${conditions.email}%`)
+    conditions.username &&= Like(`%${conditions.username}%`)
+    conditions.nickName &&= Like(`%${conditions.nickName}%`)
+
     return from(
       this.entityManager.findAndCount(User, {
+        select: [
+          'id',
+          'username',
+          'nickName',
+          'email',
+          'isFrozen',
+          'avatar',
+          'createTime',
+        ],
         skip,
         take: pageSize,
+        where: conditions,
       }),
     ).pipe(map(([users, totalCount]) => ({ users, totalCount })))
   }
