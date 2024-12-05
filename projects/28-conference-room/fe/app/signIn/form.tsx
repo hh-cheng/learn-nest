@@ -7,6 +7,7 @@ import { useRouter } from 'next/navigation'
 import { zodResolver } from '@hookform/resolvers/zod'
 
 import { signInSchema } from './types'
+import { useToast } from '@/hooks/use-toast'
 import { Input } from '@/components/ui/input'
 import {
   Form,
@@ -21,6 +22,7 @@ import { Button } from '@/components/ui/button'
 
 export default function FormComp() {
   const router = useRouter()
+  const { toast } = useToast()
 
   const form = useForm({
     resolver: zodResolver(signInSchema),
@@ -28,12 +30,16 @@ export default function FormComp() {
   })
 
   const onSubmit = (values: z.infer<typeof signInSchema>) => {
-    from(signIn('credentials', values)).subscribe((res) => {
-      if (res && !res.error) {
-        form.reset()
-        router.push('/')
-      }
-    })
+    from(signIn('credentials', { ...values, redirect: false })).subscribe(
+      (res) => {
+        if (!res!.error) {
+          form.reset()
+          router.push('/')
+        } else {
+          toast({ variant: 'destructive', description: 'login failed' })
+        }
+      },
+    )
   }
 
   return (
