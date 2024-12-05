@@ -29,7 +29,7 @@ export default function FormComp() {
 
   const onSubmit = (values: z.infer<typeof signInSchema>) => {
     from(signIn('credentials', values)).subscribe((res) => {
-      if (!res?.error) {
+      if (res && !res.error) {
         form.reset()
         router.push('/')
       }

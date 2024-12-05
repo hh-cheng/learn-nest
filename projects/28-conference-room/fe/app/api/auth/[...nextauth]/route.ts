@@ -10,15 +10,15 @@ const handler = NextAuth({
         username: {},
         password: {},
       },
-      async authorize(credentials, req) {
+      async authorize(credentials) {
         const res = await fetch('http://localhost:3000/user/login', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(credentials),
         })
-        const { data } = await res.json()
+        const { data, message } = await res.json()
 
-        if (res.ok) return data
+        if (res.ok && message === 'success') return data
         return null
       },
     }),
