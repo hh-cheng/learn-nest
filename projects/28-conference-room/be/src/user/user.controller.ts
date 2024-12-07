@@ -52,16 +52,14 @@ export class UserController {
   }
 
   @Post('update_password')
-  @RequireLogin()
   updatePassword(
     @UserInfo('userId') userId: number,
     @Body() updatePasswordDto: UpdatePasswordDto,
   ) {
-    return this.userService.updatePassword(userId, updatePasswordDto)
+    return this.userService.updatePassword(updatePasswordDto)
   }
 
   @Get('update_password_captcha')
-  @RequireLogin()
   updatePasswordCaptcha(@Query('address') address: string) {
     return this.userService.updatePasswordCaptcha(address)
   }

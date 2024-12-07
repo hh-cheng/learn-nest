@@ -132,7 +132,9 @@ export class UserService {
     )
   }
 
-  updatePassword(userId: number, updatePasswordDto: UpdatePasswordDto) {
+  updatePassword(updatePasswordDto: UpdatePasswordDto) {
+    const { email } = updatePasswordDto
+
     return from(
       this.redisService.get(
         `update_password_captcha_${updatePasswordDto.email}`,
@@ -151,14 +153,20 @@ export class UserService {
           )
         }
       }),
-      concatMap(() => from(this.entityManager.findOneBy(User, { id: userId }))),
+      concatMap(() => from(this.entityManager.findOneBy(User, { email }))),
+      tap((foundUser) => {
+        if (foundUser.isAdmin) {
+          throw new HttpException(
+            'Admin password cannot be changed',
+            HttpStatus.BAD_REQUEST,
+          )
+        }
+      }),
       map((foundUser) => {
         foundUser.password = md5(updatePasswordDto.password)
         return foundUser
       }),
-      concatMap((user) =>
-        this.entityManager.update(User, { id: userId }, user),
-      ),
+      concatMap((user) => this.entityManager.update(User, { email }, user)),
       concatMap(() =>
         this.redisService.del(
           `update_password_captcha_${updatePasswordDto.email}`,

@@ -1,3 +1,9 @@
+import Form from './form'
+
 export default function ForgetPasswordPage() {
-  return <div>forget password</div>
+  return (
+    <div className="max-w-md m-auto mt-8">
+      <Form />
+    </div>
+  )
 }

@@ -1194,6 +1194,9 @@ importers:
       clsx:
         specifier: ^2.1.1
         version: 2.1.1
+      es-toolkit:
+        specifier: ^1.27.0
+        version: 1.27.0
       lucide-react:
         specifier: ^0.465.0
         version: 0.465.0(react@19.0.0-rc-66855b96-20241106)
