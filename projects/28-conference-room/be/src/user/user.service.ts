@@ -232,7 +232,10 @@ export class UserService {
       map(() => 'update user info success'),
       catchError((err) => {
         this.logger.error(err)
-        return of('update user info failed')
+        throw new HttpException(
+          'update user info failed',
+          HttpStatus.BAD_REQUEST,
+        )
       }),
     )
   }

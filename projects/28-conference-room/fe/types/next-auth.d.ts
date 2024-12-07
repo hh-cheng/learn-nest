@@ -5,6 +5,7 @@ declare module 'next-auth' {
     userInfo: {
       id: number
       username: string
+      nickName: string
       email: string
       avatar: string
       phone: string

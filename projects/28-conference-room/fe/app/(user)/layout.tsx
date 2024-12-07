@@ -1,4 +1,4 @@
-import User from './components/user'
+import User from './components/User'
 
 export default function UserLayout(props: { children: React.ReactNode }) {
   const { children } = props

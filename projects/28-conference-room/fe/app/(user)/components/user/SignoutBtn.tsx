@@ -1,17 +1,18 @@
 'use client'
 import { signOut } from 'next-auth/react'
 
-import { DropdownMenuItem } from '@/components/ui/dropdown-menu'
+import { Button } from '@/components/ui/button'
 
 export default function SignoutBtn() {
   return (
-    <DropdownMenuItem
-      className="cursor-pointer"
+    <Button
+      variant="link"
+      className="w-full h-full justify-start"
       onClick={() => {
         signOut({ redirect: true, callbackUrl: '/signIn' })
       }}
     >
       Sign out
-    </DropdownMenuItem>
+    </Button>
   )
 }

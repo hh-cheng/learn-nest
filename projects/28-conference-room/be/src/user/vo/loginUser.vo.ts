@@ -3,6 +3,7 @@ import { z } from 'zod'
 const userInfo = z.object({
   id: z.number(),
   username: z.string(),
+  nickName: z.string(),
   email: z.string().email().catch(''),
   avatar: z.string().url().catch(''),
   phone: z.string().catch(''),
