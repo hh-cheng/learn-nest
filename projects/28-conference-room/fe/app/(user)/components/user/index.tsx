@@ -1,3 +1,4 @@
+import { auth } from '@/auth'
 import SignoutBtn from './SignoutBtn'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import {
@@ -10,16 +11,21 @@ import {
 } from '@/components/ui/dropdown-menu'
 
 export default async function User() {
+  const session = await auth()
+  const {
+    userInfo: { avatar, username },
+  } = session!
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger>
         <Avatar>
-          <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
-          <AvatarFallback>CN</AvatarFallback>
+          <AvatarImage src={avatar} alt={username} />
+          <AvatarFallback>{username}</AvatarFallback>
         </Avatar>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56">
-        <DropdownMenuLabel>Username</DropdownMenuLabel>
+        <DropdownMenuLabel>{username}</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
           <SignoutBtn />
