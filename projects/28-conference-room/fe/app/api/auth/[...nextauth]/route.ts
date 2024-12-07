@@ -23,6 +23,19 @@ const handler = NextAuth({
       },
     }),
   ],
+  callbacks: {
+    jwt(props) {
+      const { token, user } = props
+      return { ...token, ...user }
+    },
+    session({ session, token }) {
+      const _token = token as any
+      session.userInfo = _token.userInfo
+      session.accessToken = _token.accessToken
+      session.refreshToken = _token.refreshToken
+      return session
+    },
+  },
 })
 
 export { handler as GET, handler as POST }
