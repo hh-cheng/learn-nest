@@ -1,6 +1,7 @@
 'use client'
 import { z } from 'zod'
 import { from } from 'rxjs'
+import Link from 'next/link'
 import { signIn } from 'next-auth/react'
 import { useForm } from 'react-hook-form'
 import { useRouter } from 'next/navigation'
@@ -78,6 +79,14 @@ export default function FormComp() {
             </FormItem>
           )}
         />
+        <div className="flex justify-between">
+          <Button variant="link">
+            <Link href="/signUp">sign up</Link>
+          </Button>
+          <Button variant="link">
+            <Link href="/forgetPassword">forget password</Link>
+          </Button>
+        </div>
         <Button type="submit" className="w-full mt-2">
           sign in
         </Button>

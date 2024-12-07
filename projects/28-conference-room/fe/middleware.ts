@@ -1,3 +1,5 @@
 export { default } from 'next-auth/middleware'
 
-export const config = { matcher: ['/((?!signIn|signUp).*)', '/admin/:path*'] }
+export const config = {
+  matcher: ['/((?!signIn|signUp|forgetPassword).*)', '/admin/:path*'],
+}
