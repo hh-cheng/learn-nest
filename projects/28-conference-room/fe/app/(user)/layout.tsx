@@ -1,11 +1,16 @@
+import User from './components/user'
+
 export default function UserLayout(props: { children: React.ReactNode }) {
   const { children } = props
 
   return (
     <main>
-      <h1 className="border-b-2 h-14 flex items-center px-6 text-2xl">
-        Conference Room Management
-      </h1>
+      <header className="flex justify-between border-b-2 h-14 items-center px-6">
+        <h1 className="font-bold text-2xl">
+          Conference Room Management System
+        </h1>
+        <User />
+      </header>
       {children}
     </main>
   )
