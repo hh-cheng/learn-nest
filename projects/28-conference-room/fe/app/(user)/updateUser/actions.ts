@@ -1,5 +1,6 @@
 'use server'
 import { z } from 'zod'
+import dayjs from 'dayjs'
 import { to } from 'await-to-js'
 import { revalidatePath } from 'next/cache'
 
@@ -24,6 +25,10 @@ export async function getUserInfo(email: string) {
   params.append('pageSize', '1')
   params.append('pageIndex', '1')
 
+  if (!session || dayjs().isAfter(dayjs(session?.expires))) {
+    return { success: false, data: 'session expired' }
+  }
+
   // TODO create a public fetch method with auth
   const [, rawRes] = await to(
     fetch(`http://localhost:3000/user/list?${params.toString()}`, {
@@ -31,7 +36,8 @@ export async function getUserInfo(email: string) {
     }),
   )
   const res = await rawRes?.json()
-  return { success: [200, 201].includes(res.code), data: res.data }
+  const success = [200, 201].includes(res.code)
+  return { success, data: res.data }
 }
 
 export async function updateUser(info: z.infer<typeof updateUserSchema>) {

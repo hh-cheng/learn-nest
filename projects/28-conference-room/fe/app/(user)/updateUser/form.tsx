@@ -2,6 +2,7 @@
 import { z } from 'zod'
 import { from, concatMap } from 'rxjs'
 import { useForm } from 'react-hook-form'
+import { signOut } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import { zodResolver } from '@hookform/resolvers/zod'
 
@@ -21,12 +22,18 @@ import {
 } from '@/components/ui/form'
 
 type DefaultValues = {
+  isExpired: boolean
   avatar: string
   nickName: string
   email: string
 }
 
 export default function FormPage(defaultValues: DefaultValues) {
+  const { isExpired } = defaultValues
+  if (isExpired) {
+    signOut({ redirect: true, redirectTo: '/signIn' })
+  }
+
   const router = useRouter()
   const { toast } = useToast()
   const form = useForm({
